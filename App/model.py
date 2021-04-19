@@ -39,6 +39,20 @@ los mismos.
 
 # Construccion de modelos
 
+def NewCatalog(tipo:str, factor:float):
+    catalog = {'Pistas' :None,
+               'Eventos' : None,
+                'Artistas' : None,
+                ''}
+    
+    
+    
+    
+    
+    
+    
+    return catalog
+
 # Funciones para agregar informacion al catalogo
 
 # Funciones para creacion de datos

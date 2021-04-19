@@ -37,7 +37,12 @@ operación solicitada
 def printMenu():
     print("Bienvenido")
     print("1- Cargar información en el catálogo")
-    print("2- ")
+    print("2- Caracterizar las reproducciones")
+    print("3- Encontrar música para festejar")
+    print("4- Encontrar música para estudiar")
+    print("5- Estudiar géneros musicales")
+    print("6- Indicar género musical mas escuchado en un horario")
+    print("0- Salir")
 
 catalog = None
 
@@ -49,7 +54,7 @@ while True:
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
         print("Cargando información de los archivos ....")
-
+        
     elif int(inputs[0]) == 2:
         pass
 
