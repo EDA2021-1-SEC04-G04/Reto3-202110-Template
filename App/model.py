@@ -45,7 +45,7 @@ def NewCatalog(tipo:str, factor:float):
                 'Artistas' : None,
                 'Svalues' : None
                 }
-    catalog['Pistas'] = lt.newList()
+    catalog['Pistas'] = mp.newMap(5500, maptype = tipo, loadfactor= factor)
     catalog['Eventos'] = lt.newList()
     catalog['Artistas'] = lt.newList()
     catalog['Svalues'] = mp.newMap(5500, maptype = tipo, loadfactor= factor)
@@ -62,6 +62,16 @@ def NewCatalog(tipo:str, factor:float):
     return catalog
 
 # Funciones para agregar informacion al catalogo
+
+def addPista(catalogo, pista):
+    key = pista['"track_id"']
+    if mp.contains(catalogo['Pistas'], key):
+        print("1")
+        track = mp.get(catalogo['Pistas'], key)
+        track['Reproducciones'] += 1
+    else:
+        mp.put(catalogo['"track_id'], pista['"track_id"'],pista)
+
 
 # Funciones para creacion de datos
 

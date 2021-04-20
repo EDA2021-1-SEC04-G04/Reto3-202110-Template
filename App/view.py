@@ -53,7 +53,13 @@ while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
+        
         print("Cargando información de los archivos ....")
+        tipo = int(input("Ingrese 1 si desea manejar las colisiones con el método chaining o 2 para linear probing: "))
+        load_factor = float(input("Ingrese el factor de carga con el que desea trabajar: "))
+        #cambio medida tiempo y memoria
+        catalog = controller.init(tipo,load_factor)
+        answer = controller.loadData(catalog,tipo)
         
     elif int(inputs[0]) == 2:
         pass

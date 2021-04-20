@@ -30,8 +30,44 @@ El controlador se encarga de mediar entre la vista y el modelo.
 """
 
 # Inicialización del Catálogo de libros
+def init(tipo: int, factor:float):
+    """
+    Llama la funcion de inicializacion  del modelo.
+    """
+    # catalog es utilizado para interactuar con el modelo
+    catalogo = model.NewCatalog()
+    return catalogo
 
+def loadData(catalogo, tipolista):
+    delta_time = -1.0
+    delta_memory = -1.0
+
+    tracemalloc.start()
+    start_time = getTime()
+    start_memory = getMemory()
+
+    list_type = def_type_list(typ)
+    loadPistas(catalogo)
+    loadEventos(catalogo)
+    loadSvalues(catalogo)
+
+    stop_memory = getMemory()
+    stop_time = getTime()
+    tracemalloc.stop()
+
+    delta_time = stop_time - start_time
+    delta_memory = deltaMemory(start_memory, stop_memory)
+    tupla = (delta_time, delta_memory)
+    return tupla
+    
 # Funciones para la carga de datos
+
+def loadPistas(catalogo):
+    pistafile = cf.data_dir + 'context_content_features-50pct.csv'
+    input_file = csv.DictReader(open(pistafile, encoding='utf-8'),delimiter = ',')
+    for category in input_file:
+        model.addPista(catalogo, category)
+    return catalog
 
 # Funciones de ordenamiento
 
