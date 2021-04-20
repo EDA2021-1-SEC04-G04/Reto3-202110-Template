@@ -43,7 +43,15 @@ def NewCatalog(tipo:str, factor:float):
     catalog = {'Pistas' :None,
                'Eventos' : None,
                 'Artistas' : None,
-                ''}
+                'Svalues' : None
+                }
+    catalog['Pistas'] = lt.newList()
+    catalog['Eventos'] = lt.newList()
+    catalog['Artistas'] = lt.newList()
+    catalog['Svalues'] = mp.newMap(5500, maptype = tipo, loadfactor= factor)
+    
+    
+    
     
     
     
