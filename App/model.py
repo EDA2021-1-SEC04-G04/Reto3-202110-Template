@@ -30,6 +30,7 @@ from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Sorting import shellsort as sa
+from DISClib.ADT import orderedmap as om
 assert cf
 
 """
@@ -45,8 +46,9 @@ def NewCatalog(tipo:str, factor:float):
                 'Artistas' : None,
                 'Svalues' : None
                 }
-    catalog['Pistas'] = mp.newMap(5500, maptype = tipo, loadfactor= factor)
-    catalog['Eventos'] = lt.newList()
+    catalog['Pistas'] = mp.newMap(1100000, maptype = tipo, loadfactor= factor)
+    catalog['Eventos'] = om.newMap(omaptype='RBT',
+                                      comparefunction=compareDates)
     catalog['Artistas'] = lt.newList()
     catalog['Svalues'] = mp.newMap(5500, maptype = tipo, loadfactor= factor)
     
@@ -64,14 +66,17 @@ def NewCatalog(tipo:str, factor:float):
 # Funciones para agregar informacion al catalogo
 
 def addPista(catalogo, pista):
-    key = pista['"track_id"']
+    key = pista['track_id']
     if mp.contains(catalogo['Pistas'], key):
-        print("1")
         track = mp.get(catalogo['Pistas'], key)
-        track['Reproducciones'] += 1
+        lt.addLast(track['value'],pista)
     else:
-        mp.put(catalogo['"track_id'], pista['"track_id"'],pista)
+        l = lt.newList('ARRAY_LIST')
+        lt.addLast(l,pista)
+        mp.put(catalogo['Pistas'], key,l)
+        track = mp.get(catalogo['Pistas'], key)
 
+def addEvento(catalogo,evento)
 
 # Funciones para creacion de datos
 

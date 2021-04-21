@@ -23,7 +23,8 @@
 import config as cf
 import model
 import csv
-
+import time
+import tracemalloc
 
 """
 El controlador se encarga de mediar entre la vista y el modelo.
@@ -35,7 +36,7 @@ def init(tipo: int, factor:float):
     Llama la funcion de inicializacion  del modelo.
     """
     # catalog es utilizado para interactuar con el modelo
-    catalogo = model.NewCatalog()
+    catalogo = model.NewCatalog(tipo,factor)
     return catalogo
 
 def loadData(catalogo, tipolista):
@@ -46,7 +47,6 @@ def loadData(catalogo, tipolista):
     start_time = getTime()
     start_memory = getMemory()
 
-    list_type = def_type_list(typ)
     loadPistas(catalogo)
     loadEventos(catalogo)
     loadSvalues(catalogo)
@@ -67,8 +67,48 @@ def loadPistas(catalogo):
     input_file = csv.DictReader(open(pistafile, encoding='utf-8'),delimiter = ',')
     for category in input_file:
         model.addPista(catalogo, category)
-    return catalog
+    return None
+
+
+def loadEventos(catalogo):
+    eventofile = cf.data_dir + 'user_track_hashtag_timestamp-50pct'
+    input_file = csv.DictReader(open(eventofile, encoding='utf-8'),delimiter = ',')
+    for evento in input_file:
+        model.addEvento(catalogo,evento)
+    return None
+
 
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
+
+
+#FUNCIONES TIEMPO
+def getTime():
+    """
+    devuelve el instante tiempo de procesamiento en milisegundos
+    """
+    return float(time.perf_counter()*1000)
+
+
+def getMemory():
+    """
+    toma una muestra de la memoria alocada en instante de tiempo
+    """
+    return tracemalloc.take_snapshot()
+
+
+def deltaMemory(start_memory, stop_memory):
+    """
+    calcula la diferencia en memoria alocada del programa entre dos
+    instantes de tiempo y devuelve el resultado en bytes (ej.: 2100.0 B)
+    """
+    memory_diff = stop_memory.compare_to(start_memory, "filename")
+    delta_memory = 0.0
+
+    # suma de las diferencias en uso de memoria
+    for stat in memory_diff:
+        delta_memory = delta_memory + stat.size_diff
+    # de Byte -> kByte
+    delta_memory = delta_memory/1024.0
+    return delta_memory
