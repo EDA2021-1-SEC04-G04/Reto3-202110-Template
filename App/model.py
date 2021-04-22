@@ -32,7 +32,7 @@ from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Sorting import shellsort as sa
 from DISClib.ADT import orderedmap as om
 assert cf
-
+import datetime
 """
 Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
 los mismos.
@@ -76,8 +76,53 @@ def addPista(catalogo, pista):
         mp.put(catalogo['Pistas'], key,l)
         track = mp.get(catalogo['Pistas'], key)
 
-def addEvento(catalogo,evento)
+def addEvento(map,evento):
+    fecha = evento['created_at']
+    fechaevento = datetime.datetime.strptime(fecha, '%Y-%m-%d %H:%M:%S')
+    entry = om.get(map, fechaevento.date())
+    if entry is None:
+        datentry = newDataEntry(evento)
+        om.put(map, evento.date.date(), datentry)
+    else:
+        datentry = me.getValue(entry)
+    addEvento(datentry, evento)
+    return map
 
+def addIndiceFecha(entrada, evento):
+    lst = datentry['lsteventos']
+    lt.addLast(lst, evento)
+    HashtagIndex = datentry['HashtagIndex']
+    offentry = m.get(HashtagIndex, evento['hashtag'])
+    if (offentry is None):
+        entry = newDataEntry(evento['hashtag'], evento)
+        lt.addLast(entry['lsteventos'], evento)
+        m.put(HashtagIndex, evento['hashtag'], entry)
+    else:
+        entry = me.getValue(offentry)
+        lt.addLast(entry['lsteventos'], evento)
+    return datentry
+
+def newDataEntry(evento):
+    """
+    Crea una entrada en el indice por fechas, es decir en el arbol
+    binario.
+    """
+    entry = {'HashtagIndex': None, 'lsteventos': None}
+    entry['HashtagIndex'] = m.newMap(numelements=60,
+                                     maptype='PROBING',
+                                     comparefunction=compareOffenses)
+    entry['lsteventos'] = lt.newList('SINGLE_LINKED', compareDates)
+    return entry
+
+def newOffenseEntry(hashtag, evento):
+    """
+    Crea una entrada en el indice por tipo de crimen, es decir en
+    la tabla de hash, que se encuentra en cada nodo del arbol.
+    """
+    ofentry = {'hashtag': None, 'lsteventos': None}
+    ofentry['hashtag'] = hashtag
+    ofentry['lsteventos'] = lt.newList('SINGLELINKED', compareHashtags)
+    return ofentry
 # Funciones para creacion de datos
 
 # Funciones de consulta
@@ -85,3 +130,21 @@ def addEvento(catalogo,evento)
 # Funciones utilizadas para comparar elementos dentro de una lista
 
 # Funciones de ordenamiento
+def compareDates(date1, date2):
+    """
+    Compara dos fechas
+    """
+    if (date1 == date2):
+        return 0
+    elif (date1 > date2):
+        return 1
+    else:
+        return -1
+    
+def compareHashtags(h1, h22):
+    if (h1 == h2):
+        return 0
+    elif (h1 > h2):
+        return 1
+    else:
+        return -1

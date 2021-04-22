@@ -74,7 +74,7 @@ def loadEventos(catalogo):
     eventofile = cf.data_dir + 'user_track_hashtag_timestamp-50pct'
     input_file = csv.DictReader(open(eventofile, encoding='utf-8'),delimiter = ',')
     for evento in input_file:
-        model.addEvento(catalogo,evento)
+        model.addEvento(catalogo['Eventos'],evento)
     return None
 
 
