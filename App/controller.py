@@ -71,7 +71,7 @@ def loadPistas(catalogo):
 
 
 def loadEventos(catalogo):
-    eventofile = cf.data_dir + 'user_track_hashtag_timestamp-50pct'
+    eventofile = cf.data_dir + 'user_track_hashtag_timestamp-50pct.csv'
     input_file = csv.DictReader(open(eventofile, encoding='utf-8'),delimiter = ',')
     for evento in input_file:
         model.addEvento(catalogo['Eventos'],evento)

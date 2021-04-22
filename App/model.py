@@ -96,7 +96,7 @@ def addIndiceFecha(entrada, evento):
     if (offentry is None):
         entry = newDataEntry(evento['hashtag'], evento)
         lt.addLast(entry['lsteventos'], evento)
-        m.put(HashtagIndex, evento['hashtag'], entry)
+        mp.put(HashtagIndex, evento['hashtag'], entry)
     else:
         entry = me.getValue(offentry)
         lt.addLast(entry['lsteventos'], evento)
