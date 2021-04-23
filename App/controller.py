@@ -35,6 +35,8 @@ def init(tipo: int, factor:float):
     """
     Llama la funcion de inicializacion  del modelo.
     """
+    if tipo == 1:
+        tipo = 
     # catalog es utilizado para interactuar con el modelo
     catalogo = model.NewCatalog(tipo,factor)
     return catalogo
@@ -63,7 +65,7 @@ def loadData(catalogo, tipolista):
 # Funciones para la carga de datos
 
 def loadPistas(catalogo):
-    pistafile = cf.data_dir + 'context_content_features-50pct.csv'
+    pistafile = cf.data_dir + 'context_content_features-5pct.csv'
     input_file = csv.DictReader(open(pistafile, encoding='utf-8'),delimiter = ',')
     for category in input_file:
         model.addPista(catalogo, category)
@@ -71,7 +73,7 @@ def loadPistas(catalogo):
 
 
 def loadEventos(catalogo):
-    eventofile = cf.data_dir + 'user_track_hashtag_timestamp-50pct.csv'
+    eventofile = cf.data_dir + 'user_track_hashtag_timestamp-5pct.csv'
     input_file = csv.DictReader(open(eventofile, encoding='utf-8'),delimiter = ',')
     for evento in input_file:
         model.addEvento(catalogo['Eventos'],evento)
