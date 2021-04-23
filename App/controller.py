@@ -77,6 +77,12 @@ def loadEventos(catalogo):
         model.addEvento(catalogo['Eventos'],evento)
     return None
 
+def loadSvalues(catalogo):
+    sfile = cf.data_dir + 'sentiment_values.csv'
+    input_file = csv.DictReader(open(sfile, encoding='utf-8'),delimiter = ',')
+    for svalue in input_file:
+        model.addSvalue(catalogo,svalue)
+
 
 # Funciones de ordenamiento
 

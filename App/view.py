@@ -60,7 +60,7 @@ while True:
         #cambio medida tiempo y memoria
         catalog = controller.init(tipo,load_factor)
         answer = controller.loadData(catalog,tipo)
-        
+        print("Cargado correctamente")
     elif int(inputs[0]) == 2:
         pass
 

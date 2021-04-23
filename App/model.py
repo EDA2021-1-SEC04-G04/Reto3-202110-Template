@@ -82,25 +82,25 @@ def addEvento(map,evento):
     entry = om.get(map, fechaevento.date())
     if entry is None:
         datentry = newDataEntry(evento)
-        om.put(map, evento.date.date(), datentry)
+        om.put(map, fechaevento.date(), datentry)
     else:
         datentry = me.getValue(entry)
-    addEvento(datentry, evento)
+    addIndiceFecha(datentry, evento)
     return map
 
 def addIndiceFecha(entrada, evento):
-    lst = datentry['lsteventos']
+    lst = entrada['lsteventos']
     lt.addLast(lst, evento)
-    HashtagIndex = datentry['HashtagIndex']
-    offentry = m.get(HashtagIndex, evento['hashtag'])
+    HashtagIndex = entrada['HashtagIndex']
+    offentry = mp.get(HashtagIndex, evento['hashtag'])
     if (offentry is None):
-        entry = newDataEntry(evento['hashtag'], evento)
+        entry = newOffenseEntry(evento['hashtag'], evento)
         lt.addLast(entry['lsteventos'], evento)
         mp.put(HashtagIndex, evento['hashtag'], entry)
     else:
         entry = me.getValue(offentry)
         lt.addLast(entry['lsteventos'], evento)
-    return datentry
+    return entrada
 
 def newDataEntry(evento):
     """
@@ -108,9 +108,10 @@ def newDataEntry(evento):
     binario.
     """
     entry = {'HashtagIndex': None, 'lsteventos': None}
-    entry['HashtagIndex'] = m.newMap(numelements=60,
-                                     maptype='PROBING',
-                                     comparefunction=compareOffenses)
+    entry['HashtagIndex'] = mp.newMap(numelements=30,
+                                     maptype='CHAINING',
+                                     comparefunction= compareHashtags
+                                     )
     entry['lsteventos'] = lt.newList('SINGLE_LINKED', compareDates)
     return entry
 
@@ -123,6 +124,13 @@ def newOffenseEntry(hashtag, evento):
     ofentry['hashtag'] = hashtag
     ofentry['lsteventos'] = lt.newList('SINGLELINKED', compareHashtags)
     return ofentry
+
+
+def addSvalue(catalogo, svalue):
+    key = svalue['hashtag']
+    mp.put(catalogo['Svalues'], key,svalue
+           )
+    
 # Funciones para creacion de datos
 
 # Funciones de consulta
@@ -141,10 +149,13 @@ def compareDates(date1, date2):
     else:
         return -1
     
-def compareHashtags(h1, h22):
-    if (h1 == h2):
+def compareHashtags(h1, h2):
+    hasthgas = me.getKey(h2)
+    if (h1 == hasthgas):
         return 0
-    elif (h1 > h2):
+    elif (h1 > hasthgas):
         return 1
     else:
         return -1
+    
+
