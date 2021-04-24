@@ -51,9 +51,9 @@ def loadData(catalogo, tipolista):
     start_time = getTime()
     start_memory = getMemory()
 
-    loadPistas(catalogo)
     loadEventos(catalogo)
     loadSvalues(catalogo)
+    loadRegistros(catalogo)
 
     stop_memory = getMemory()
     stop_time = getTime()
@@ -66,26 +66,28 @@ def loadData(catalogo, tipolista):
     
 # Funciones para la carga de datos
 
-def loadPistas(catalogo):
-    pistafile = cf.data_dir + 'context_content_features-5pct.csv'
+def loadEventos(catalogo):
+    pistafile = cf.data_dir + 'context_content_features-50pct.csv'
     input_file = csv.DictReader(open(pistafile, encoding='utf-8'),delimiter = ',')
     for category in input_file:
         model.addPista(catalogo, category)
+        model.addEvento(catalogo,category)
     return None
 
 
-def loadEventos(catalogo):
-    eventofile = cf.data_dir + 'user_track_hashtag_timestamp-5pct.csv'
-    input_file = csv.DictReader(open(eventofile, encoding='utf-8'),delimiter = ',')
-    for evento in input_file:
-        model.addEvento(catalogo['Eventos'],evento)
-    return None
 
 def loadSvalues(catalogo):
     sfile = cf.data_dir + 'sentiment_values.csv'
     input_file = csv.DictReader(open(sfile, encoding='utf-8'),delimiter = ',')
     for svalue in input_file:
         model.addSvalue(catalogo,svalue)
+        
+def loadRegistros(catalogo):
+    eventofile = cf.data_dir + 'user_track_hashtag_timestamp-50pct.csv'
+    input_file = csv.DictReader(open(eventofile, encoding='utf-8'),delimiter = ',')
+    for evento in input_file:
+        model.addRegistro(catalogo['Eventos'],evento)
+    return None
 
 
 # Funciones de ordenamiento

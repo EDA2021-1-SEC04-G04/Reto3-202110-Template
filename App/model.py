@@ -44,14 +44,14 @@ def NewCatalog(tipo:str, factor:float):
     catalog = {'Pistas' :None,
                'Eventos' : None,
                 'Artistas' : None,
+                'Registros_Eventos' : None,
                 'Svalues' : None
                 }
     catalog['Pistas'] = mp.newMap(1100000, maptype = tipo, loadfactor= factor)
-    catalog['Eventos'] = om.newMap(omaptype='BST',
-                                      comparefunction=compareDates)
-    catalog['Artistas'] = lt.newList()
+    catalog['Eventos'] = mp.newMap(maptype= tipo, loadfactor= factor)
+    catalog['Artistas'] = mp.newMap(maptype= tipo, loadfactor= factor)
     catalog['Svalues'] = mp.newMap(5500, maptype = tipo, loadfactor= factor)
-    
+    catalog['Registros_Eventos'] = lt.newList(datastructure= 'ARRAY_LIST')
     
     
     
@@ -67,70 +67,39 @@ def NewCatalog(tipo:str, factor:float):
 
 def addPista(catalogo, pista):
     key = pista['track_id']
-    if mp.contains(catalogo['Pistas'], key):
-        track = mp.get(catalogo['Pistas'], key)
-        lt.addLast(track['value'],pista)
+    x = mp.get(catalogo['Pistas'], key)
+    if x is None:
+        pista['reproducciones'] = 0
+        pista['eventos'] = lt.newList()
+        mp.put(catalogo['Pistas'], key, pista)
+        addArtista(catalogo, key, pista['artist_id'])
+        
     else:
-        l = lt.newList('ARRAY_LIST')
-        lt.addLast(l,pista)
-        mp.put(catalogo['Pistas'], key,l)
-        track = mp.get(catalogo['Pistas'], key)
+        y = me.getValue(x)
+        y['reproducciones'] += 1
+        lt.addLast(y['eventos'],pista['id'])
 
-def addEvento(map,evento):
-    fecha = evento['created_at']
-    fechaevento = datetime.datetime.strptime(fecha, '%Y-%m-%d %H:%M:%S')
-    entry = om.get(map, fechaevento.date())
-    if entry is None:
-        datentry = newDataEntry(evento)
-        om.put(map, fechaevento.date(), datentry)
-    else:
-        datentry = me.getValue(entry)
-    addIndiceFecha(datentry, evento)
-    return map
-
-def addIndiceFecha(entrada, evento):
-    lst = entrada['lsteventos']
-    lt.addLast(lst, evento)
-    HashtagIndex = entrada['HashtagIndex']
-    offentry = mp.get(HashtagIndex, evento['hashtag'])
-    if (offentry is None):
-        entry = newOffenseEntry(evento['hashtag'], evento)
-        lt.addLast(entry['lsteventos'], evento)
-        mp.put(HashtagIndex, evento['hashtag'], entry)
-    else:
-        entry = me.getValue(offentry)
-        lt.addLast(entry['lsteventos'], evento)
-    return entrada
-
-def newDataEntry(evento):
-    """
-    Crea una entrada en el indice por fechas, es decir en el arbol
-    binario.
-    """
-    entry = {'HashtagIndex': None, 'lsteventos': None}
-    entry['HashtagIndex'] = mp.newMap(numelements=30,
-                                     maptype='CHAINING',
-                                     comparefunction= compareHashtags
-                                     )
-    entry['lsteventos'] = lt.newList('SINGLE_LINKED', compareDates)
-    return entry
-
-def newOffenseEntry(hashtag, evento):
-    """
-    Crea una entrada en el indice por tipo de crimen, es decir en
-    la tabla de hash, que se encuentra en cada nodo del arbol.
-    """
-    ofentry = {'hashtag': None, 'lsteventos': None}
-    ofentry['hashtag'] = hashtag
-    ofentry['lsteventos'] = lt.newList('SINGLELINKED', compareHashtags)
-    return ofentry
-
+def addEvento(catalogo,evento):
+    mp.put(catalogo['Eventos'], evento['id'], evento)
+    
 
 def addSvalue(catalogo, svalue):
     key = svalue['hashtag']
     mp.put(catalogo['Svalues'], key,svalue
            )
     
+def addArtista(catalogo, pista, artista):
+    x = mp.get(catalogo['Artistas'], artista)
+    if x is None:
+        l = lt.newList()
+        lt.addLast(l,pista)
+        mp.put(catalogo['Artistas'], artista, l)
+    else:
+        y = me.getValue(x)
+        lt.addLast(y,pista)
+    
+def addRegistro(catalogo, registro):
+    lt.addLast(catalogo['Registro_Eventos'], registro)
 # Funciones para creacion de datos
 
 # Funciones de consulta
