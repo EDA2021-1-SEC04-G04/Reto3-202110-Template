@@ -47,7 +47,7 @@ def NewCatalog(tipo:str, factor:float):
                 'Svalues' : None
                 }
     catalog['Pistas'] = mp.newMap(1100000, maptype = tipo, loadfactor= factor)
-    catalog['Eventos'] = om.newMap(omaptype='RBT',
+    catalog['Eventos'] = om.newMap(omaptype='BST',
                                       comparefunction=compareDates)
     catalog['Artistas'] = lt.newList()
     catalog['Svalues'] = mp.newMap(5500, maptype = tipo, loadfactor= factor)

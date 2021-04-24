@@ -64,6 +64,6 @@ while True:
     elif int(inputs[0]) == 2:
         pass
 
-    else:
+    elif int(input[0]) == 0:
         sys.exit(0)
 sys.exit(0)

@@ -36,7 +36,9 @@ def init(tipo: int, factor:float):
     Llama la funcion de inicializacion  del modelo.
     """
     if tipo == 1:
-        tipo = 
+        tipo = "CHAINING"
+    else:
+        tipo = "PROBING"
     # catalog es utilizado para interactuar con el modelo
     catalogo = model.NewCatalog(tipo,factor)
     return catalogo
