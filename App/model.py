@@ -49,7 +49,7 @@ def NewCatalog(tipo:str, factor:float):
                 }
     catalog['Pistas'] = mp.newMap(1100000, maptype = tipo, loadfactor= factor)
     catalog['Eventos'] = mp.newMap(maptype= tipo, loadfactor= factor)
-    catalog['Artistas'] = mp.newMap(maptype= tipo, loadfactor= factor)
+    catalog['Artistas'] = lt.newList()
     catalog['Svalues'] = mp.newMap(5500, maptype = tipo, loadfactor= factor)
     catalog['Registros_Eventos'] = lt.newList(datastructure= 'ARRAY_LIST')
     
@@ -89,17 +89,11 @@ def addSvalue(catalogo, svalue):
            )
     
 def addArtista(catalogo, pista, artista):
-    x = mp.get(catalogo['Artistas'], artista)
-    if x is None:
-        l = lt.newList()
-        lt.addLast(l,pista)
-        mp.put(catalogo['Artistas'], artista, l)
-    else:
-        y = me.getValue(x)
-        lt.addLast(y,pista)
+    if str(artista) not in catalogo['Artistas']:
+        lt.addLast(catalogo['Artistas'], artista)
     
 def addRegistro(catalogo, registro):
-    lt.addLast(catalogo['Registro_Eventos'], registro)
+    lt.addLast(catalogo['Registros_Eventos'], registro)
 # Funciones para creacion de datos
 
 # Funciones de consulta
@@ -107,7 +101,7 @@ def addRegistro(catalogo, registro):
 # Funciones utilizadas para comparar elementos dentro de una lista
 
 # Funciones de ordenamiento
-def compareDates(date1, date2):
+def compare(date1, date2):
     """
     Compara dos fechas
     """
