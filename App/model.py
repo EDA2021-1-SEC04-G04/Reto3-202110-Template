@@ -106,6 +106,12 @@ def Arbolde(Pistas, criterio):
             om.put(arbol, song[criterio],p)
         else:
             lt.addLast(om.getValue(x),song)
+    return arbol
+            
+def integrar(arbol, min,max)
+    l = om.values(arbol, min,max)
+    
+    
 
 
 # Funciones de consulta

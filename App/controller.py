@@ -92,7 +92,9 @@ def loadRegistros(catalogo):
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
-def consulta
+def Consulta_en_pistas(Pistas, criterio, min, max):
+     a = model.Arbolde(Pistas, criterio)
+     return model.integrar(a,min,max)
 
 #FUNCIONES TIEMPO
 def getTime():
