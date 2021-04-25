@@ -96,6 +96,18 @@ def addRegistro(catalogo, registro):
     lt.addLast(catalogo['Registros_Eventos'], registro)
 # Funciones para creacion de datos
 
+def Arbolde(Pistas, criterio):
+    arbol = om.newMap(omaptype=RBT)
+    for song in Pistas:
+        x = om.get(arbol,song[criterio])
+        if x is None:
+            p = lt.newList()
+            lt.addLast(p,song)
+            om.put(arbol, song[criterio],p)
+        else:
+            lt.addLast(om.getValue(x),song)
+
+
 # Funciones de consulta
 
 # Funciones utilizadas para comparar elementos dentro de una lista
