@@ -99,8 +99,8 @@ def ArbolDe(catalog,pistas, criterio):
     arbol = model.Arbolde(catalog,pistas,criterio)
     return arbol
 
-def arbolDeArbol(arbol,criterio):
-    derivado = model.arbolDeArbol
+def arbolDeArbol(arbol,criterio, min, max):
+    derivado = model.filtradoenlista(om.values(arbol), criterio, min, max)
     return derivado
 
 def songsByValues(arbol,val_min,val_max):
