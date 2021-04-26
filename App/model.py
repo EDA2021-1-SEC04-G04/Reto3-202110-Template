@@ -212,11 +212,45 @@ def songsByValues(arbol,val_min,val_max):
 
 def separarpistas(catalogo,lista):
     canciones = mp.newMap(maptype='PROBING', loadfactor=0.5)
-    for registro in lt.iterator(lista):
-        for num in range(0,lt.size(lista)):
+    for recorrido in lt.iterator(lista):
+        for num in range(0,lt.size(recorrido)):
+            registro = lt.getElement(recorrido, num)
             if mp.contains(canciones, registro['track_id']) == False:
-                mp.put(canciones, mp.get(catalog['Pistas'],registro['track_id']))
+                pista = mp.get(catalog['Pistas'],registro['track_id'])
+                pista = me.getValue(pista).copy()
+                pista['hashtags'] = lt.newList(datastructure='ARRAY_LIST')
+                lt.addLast(pista['hastags'],registro['hashtag'])
+                mp.put(canciones,registro['track_id'], pista)
+            else:
+                pista = mp.get(canciones,registro['track_id'])
+                pista = me.getValue(pista)
+                lt.addLast(pista['hashtags'],registro['hashtag'])
     return canciones
+
+
+def recorridogeneros(catalogo, pistas):
+    generos = mp.keySet(catalog['Generos'])
+    contadores = mp.newMap(maptype='PROBING', loadfactor=0.5)
+    generomasreproducido = ["",0]
+    for genero in generos:
+        listacanciones = lt.newList(datastructure='ARRAY_LIST')
+        mp.put(contadores, genero, [0,listacanciones])
+    for pista in pistas:
+        for genero in generos:
+            valores = mp.get(catalogo['Generos'], genero)
+            valores = me.getValue(valores)
+            if pista['tempo'] >= valores[0] and pista['tempo'] <= valores[1]:
+                añadir = mp.get(contadores, genero)
+                añaidr = me.getValue(añadir)
+                añadir[0] += pista['reproducciones']
+                if añadir > generomasreproducido[1]:
+                    generomasreproducido[0] = genero
+                    generomasreproducido[1] = añadir[0]
+                    lt.addLast(añadir[1],pista)
+    return contadores, generomasreproducido
+
+
+    
         
         
         

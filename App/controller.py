@@ -101,6 +101,9 @@ def separarpistas(catalogo, lista):
     pistaslistas = model.separarpistas(catalogo,lista)
     return pistaslistas
 
+def recorridogenero(catalogo,pistas)
+    tupla = model.recorridogeneros(catalogo,pistas)
+    return tupla
 # Funciones de consulta sobre el catálogo
 def ArbolDe(catalog,pistas, criterio):
     arbol = model.Arbolde(catalog,pistas,criterio)
