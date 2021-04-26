@@ -29,7 +29,7 @@ from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 import random
-
+from DISClib.ADT import orderedmap as om
 """
 La vista se encarga de la interacción con el usuario
 Presenta el menu de opciones y por cada seleccion
