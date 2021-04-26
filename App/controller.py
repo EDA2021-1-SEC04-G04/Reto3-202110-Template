@@ -26,6 +26,7 @@ import csv
 import time
 import tracemalloc
 
+
 """
 El controlador se encarga de mediar entre la vista y el modelo.
 """
@@ -54,6 +55,7 @@ def loadData(catalogo, tipolista):
     loadEventos(catalogo)
     loadSvalues(catalogo)
     loadRegistros(catalogo)
+    loadContent(catalogo)
 
     stop_memory = getMemory()
     stop_time = getTime()
@@ -69,10 +71,9 @@ def loadData(catalogo, tipolista):
 def loadEventos(catalogo):
     pistafile = cf.data_dir + 'context_content_features-small.csv'
     input_file = csv.DictReader(open(pistafile, encoding='utf-8'),delimiter = ',')
-    for category in input_file:
-        model.addPista(catalogo, category)
-        model.addEvento(catalogo,category)
-    return None
+    for pista in input_file:
+        model.addPista(catalogo, pista)
+        model.addEvento(catalogo,pista)
 
 
 
@@ -88,13 +89,22 @@ def loadRegistros(catalogo):
     for evento in input_file:
         model.addRegistro(catalogo,evento)
 
+def loadContent(catalogo):
+    model.addContent(catalogo)
 
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
-def Consulta_en_pistas(Pistas, criterio, min, max):
-     a = model.Arbolde(Pistas, criterio)
-     return model.integrar(a,min,max)
+def ArbolDe(catalog,pistas, criterio):
+    arbol = model.Arbolde(catalog,pistas,criterio)
+    return arbol
+
+def arbolDeArbol(arbol,criterio):
+    derivado = model.arbolDeArbol
+    return derivado
+
+def songsByValues(arbol,val_min,val_max):
+    return model.songsByValues(arbol,val_min,val_max)
 
 #FUNCIONES TIEMPO
 def getTime():

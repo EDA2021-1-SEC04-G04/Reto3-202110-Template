@@ -44,43 +44,37 @@ def NewCatalog(tipo:str, factor:float):
     catalog = {'Pistas' :None,
                'Eventos' : None,
                 'Artistas' : None,
-                'Registros_Eventos' : None,
-                'Svalues' : None
+                'Registros': None,
+                'Svalues' : None,
+                'Content' : None
                 }
     catalog['Pistas'] = mp.newMap(1100000, maptype = tipo, loadfactor= factor)
-    catalog['Eventos'] = mp.newMap(maptype= tipo, loadfactor= factor)
+    catalog['Eventos'] = lt.newList(datastructure='ARRAY_LIST')
     catalog['Artistas'] = lt.newList()
+    catalog['Registros_Eventos'] = lt.newList(datastructure='ARRAY_LIST')
     catalog['Svalues'] = mp.newMap(5500, maptype = tipo, loadfactor= factor)
-    catalog['Registros_Eventos'] = lt.newList(datastructure= 'ARRAY_LIST')
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    catalog['Content'] = mp.newMap(15,maptype=tipo,loadfactor=factor) 
+
     return catalog
 
 # Funciones para agregar informacion al catalogo
 
 def addPista(catalogo, pista):
-    key = pista['track_id']
-    x = mp.get(catalogo['Pistas'], key)
-    if x is None:
+    track_id = pista['track_id']
+    track = mp.get(catalogo['Pistas'], track_id)
+    if track is None:
         pista['reproducciones'] = 0
         pista['eventos'] = lt.newList()
-        mp.put(catalogo['Pistas'], key, pista)
-        addArtista(catalogo, key, pista['artist_id'])
+        mp.put(catalogo['Pistas'], track_id, pista)
+        addArtista(catalogo, pista['artist_id'])
         
     else:
-        y = me.getValue(x)
-        y['reproducciones'] += 1
-        lt.addLast(y['eventos'],pista['id'])
+        pista = me.getValue(track)
+        pista['reproducciones'] += 1
+        lt.addLast(pista['eventos'],pista['id'])
 
 def addEvento(catalogo,evento):
-    mp.put(catalogo['Eventos'], evento['id'], evento)
+    lt.addLast(catalogo['Eventos'],evento)
     
 
 def addSvalue(catalogo, svalue):
@@ -88,44 +82,104 @@ def addSvalue(catalogo, svalue):
     mp.put(catalogo['Svalues'], key,svalue
            )
     
-def addArtista(catalogo, pista, artista):
+def addArtista(catalogo, artista):
     if str(artista) not in catalogo['Artistas']:
         lt.addLast(catalogo['Artistas'], artista)
     
 def addRegistro(catalogo, registro):
     lt.addLast(catalogo['Registros_Eventos'], registro)
+
+def addContent(catalogo):
+    contenido = catalogo['Content']
+    mp.put(contenido,'instrumentalness',None)
+    mp.put(contenido,'liveness',None)
+    mp.put(contenido,'speechiness',None)
+    mp.put(contenido,'danceability',None)
+    mp.put(contenido,'valence',None)
+    mp.put(contenido,'loudness',None)
+    mp.put(contenido,'tempo',None)
+    mp.put(contenido,'acousticness',None)
+    mp.put(contenido,'energy',None)
+    mp.put(contenido,'mode',None)
+    mp.put(contenido,'key',None)
+
 # Funciones para creacion de datos
 
-def Arbolde(Pistas, criterio):
-    arbol = om.newMap(omaptype=RBT)
-    for song in Pistas:
-        x = om.get(arbol,song[criterio])
-        if x is None:
-            p = lt.newList()
-            lt.addLast(p,song)
-            om.put(arbol, song[criterio],p)
-        else:
-            lt.addLast(om.getValue(x),song)
+def Arbolde(catalog,Pistas,criterio):
+    content = catalog['Content']
+    characteristic = mp.get(content,criterio)
+    arbol = me.getValue(characteristic)
+    if arbol is None:
+        arbol = om.newMap(omaptype='RBT',comparefunction=compareValue)
+        keyset= mp.keySet(Pistas)
+        for num in range(0,lt.size(keyset)):
+            llave = lt.getElement(keyset,num)
+            pair = mp.get(Pistas,llave)
+            if pair != None:
+                cancion = me.getValue(pair)
+                val_crit = float(cancion[criterio])
+                entry = om.get(arbol,val_crit)
+                if entry is None:
+                    songs = lt.newList()
+                    lt.addLast(songs,cancion)
+                    om.put(arbol, val_crit,songs)
+                else:
+                    lt.addLast(me.getValue(entry),cancion)
+        mp.put(content,criterio,arbol)
     return arbol
-            
-def integrar(arbol, min,max)
-    l = om.values(arbol, min,max)
-    
-    
 
+'''            
+def arbolDeArbol(arbol,criterio, min,max):
+    arbol_derivado = om.newMap(omaptype='RBT',comparefunction=compareValue)
+    for songs in lt.iterator(arbol):
+        for num in range(0,lt.size(songs)):
+            song = lt.getElement(arbol,num)
+            print(song)
+            val_crit = float(song[criterio])
+            entry = om.get(arbol_derivado,val_crit)
+            if entry is None:
+                songs = lt.newList()
+                lt.addLast(songs,song)
+                om.put(arbol, val_crit,songs)
+            else:
+                lt.addLast(me.getValue(entry),song)
+    return arbol_derivado
+'''
 
 # Funciones de consulta
+
+def songsByValues(arbol,val_min,val_max):
+    lst = om.values(arbol, val_min, val_max)
+    totplays = 0
+    artists = lt.newList()
+    totartists = 0
+    uni_tracks = lt.newList()
+    totsongs = 0
+    for songs in lt.iterator(lst):
+        for num in range(0,lt.size(songs)):
+            song = lt.getElement(songs,num)
+            if lt.isPresent(artists,song['artist_id'])!=0:
+                totartists +=1
+                lt.addLast(artists,song['artist_id'])
+
+            totplays += song['reproducciones']
+
+            if lt.isPresent(uni_tracks,song['track_id'])!=0:
+                totsongs +=1
+                lt.addLast(uni_tracks,song['track_id'])
+
+    return totplays,totartists,totsongs,lst
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 
 # Funciones de ordenamiento
-def compare(date1, date2):
+def compareValue(value1, value2):
     """
     Compara dos fechas
     """
-    if (date1 == date2):
+    if (value1 == value2):
         return 0
-    elif (date1 > date2):
+    elif (value1 > value2):
         return 1
     else:
         return -1
