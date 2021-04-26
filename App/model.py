@@ -150,8 +150,6 @@ def filtradoenlista(lista,criterio,min_,max_):
     reproducciones = 0
     artistas = mp.newMap(maptype='PROBING', loadfactor=0.5)
     for tadlistas in lt.iterator(lista):
-        print(type(tadlistas))
-        print(tadlistas)
         for pos in range(0,lt.size(tadlistas)):
             pista = lt.getElement(tadlistas,pos)
             if (float(pista[criterio]) >= min_) and (float(pista[criterio]) <= max_):
@@ -182,9 +180,7 @@ def songsByValues(arbol,val_min,val_max):
 
             totplays += song['reproducciones']
 
-            if lt.isPresent(uni_tracks,song['track_id'])!=0:
-                totsongs +=1
-                lt.addLast(uni_tracks,song['track_id'])
+            totsongs += 1
 
     return totplays,totartists,totsongs,lst
 
