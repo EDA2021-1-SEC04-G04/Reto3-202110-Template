@@ -149,9 +149,9 @@ def filtradoenlista(lista,criterio,min_,max_):
     pistas = lt.newList(datastructure='ARRAY_LIST')
     reproducciones = 0
     artistas = mp.newMap(maptype='PROBING', loadfactor=0.5)
-    for y in lista:
-        for x in range(0,lt.size(y)):
-            pista = lt.getElement(y,x)
+    for tadlistas in lista:
+        for pos in range(0,lt.size(tadlistas)):
+            pista = lt.getElement(tadlistas,pos)
             if (float(pista[criterio]) >= min_) and (float(pista[criterio]) <= max_):
                 lt.addLast(pistas,pista)
                 reproducciones += pista['reproducciones']
