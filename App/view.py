@@ -60,7 +60,7 @@ def req_1(catalog,criterio,val_min,val_max):
 def req_2(catalog,ene_min,ene_max,dan_min,dan_max):
     pistas = catalog['Pistas']
     arbol_ene = controller.ArbolDe(catalog,pistas,'energy')
-    arbol_dan = controller.filtradoenlista(om.values(arbolene,ene_min,ene_max),'danceability',dan_min, dan_max)
+    arbol_dan = controller.filtradoenlista(om.values(arbol_ene,ene_min,ene_max),'danceability',dan_min, dan_max)
     printReq2(rep[2],arbol_dan)
 
 #Funciones de impresión
