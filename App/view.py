@@ -63,6 +63,23 @@ def req_2(catalog,ene_min,ene_max,dan_min,dan_max):
     arbol_dan = controller.filtradoenlista(om.values(arbol_ene,ene_min,ene_max),'danceability',dan_min, dan_max)
     printReq2(arbol_dan,ene_min,ene_max,dan_min,dan_max)
 
+def req_3(catalog, instru_min,instru_max,tempo_min,tempo_max):
+    pistas = catalog['Pistas']
+    arbol_spech = controller.ArbolDe(catalog,pistas, "tempo")
+    filtradoinstrumental = controller.filtradoenlista(om.values(arbol_spech, tempo_min, tempo_max),"instrumentalness",instru_min,instru_max)
+    printReq2(filtradoinstrumental)
+    
+def req_4(generosconsulta, catalog):
+    arboltempo = controller.ArbolDe(catalog, catalog['Pistas'], "tempo")
+    generos = generosconsulta.split(",")
+    for genero in generos:
+        print(genero)
+        rango = mp.get(catalog['Generos'], genero)
+        print(rango)
+        rango = me.getValue(rango)
+        individual = controller.songsByValues(arboltempo,rango[0],rango[1])
+        printreq4(individual)
+    
 #Funciones de impresión
 
 def printReq1(rep_art,content,val_min,val_max):
@@ -180,6 +197,27 @@ while True:
         dan_min = float(input("Ingrese el valor mínimo de danzabilidad de la canción: "))
         dan_max = float(input("Ingrese el valor máximo de danzabilidad de la canción: "))
         req_2(catalog,ene_min,ene_max,dan_min,dan_max)
+    elif int(inputs[0]) == 4:
+        instru_min =  float(input("Ingrese el valor mínimo de instrumentalidad de la canción: "))
+        instru_max =    float(input("Ingrese el valor máximo de instrumentabilidad de la canción: "))
+        tempo_min = float(input("Ingrese el valor mínimo de tempo de la canción: "))
+        tempo_max = float(input("Ingrese el valor máximo de tempo de la canción: "))
+        req_3(catalog, instru_min,instru_max, tempo_min,tempo_max)
+    elif int(inputs[0]) == 5:
+        eleccion = "8"
+        generosconsulta = ""
+        while int(eleccion[0]) != 3:
+            eleccion = input("-Presione 1 para escribir los generos a estudiar ya guardados\n-Presione 2 para añadir uno \n-Presione 3 para confirmar la lista de generos a estudiar\n")
+        
+            if int(eleccion[0])==1:
+                generosconsulta += input("Escriba los generos a consultar separados por comas:\n")
+            if int(eleccion[0]) == 2:
+                nombre = input("Ingrese un nombre unico para el nuevo genero:\n") 
+                tempo_min = float(input("Ingrese el BPM minimo: "))
+                tempo_max = float(input("Ingrese el BPM maximo: "))
+                catalog['Generos'][nombre] = (tempo_min,tempo_max)
+            if int(eleccion[0]) == 3:
+                req_4(generosconsulta,catalog)
     elif int(inputs[0]) == 0:
         sys.exit(0)
 sys.exit(0)

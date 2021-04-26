@@ -56,6 +56,7 @@ def loadData(catalogo, tipolista):
     loadSvalues(catalogo)
     loadRegistros(catalogo)
     loadContent(catalogo)
+    loadGenerosiniciales(catalogo)
 
     stop_memory = getMemory()
     stop_time = getTime()
@@ -92,6 +93,8 @@ def loadRegistros(catalogo):
 def loadContent(catalogo):
     model.addContent(catalogo)
 
+def loadGenerosiniciales(catalogo):
+    model.addGenerosniciales(catalogo)
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
@@ -99,9 +102,12 @@ def ArbolDe(catalog,pistas, criterio):
     arbol = model.Arbolde(catalog,pistas,criterio)
     return arbol
 
+
 def filtradoenlista(lista,criterio, min_, max_):
     derivado = model.filtradoenlista(lista, criterio, min_, max_)
     return derivado
+
+
 
 def songsByValues(arbol,val_min,val_max):
     return model.songsByValues(arbol,val_min,val_max)

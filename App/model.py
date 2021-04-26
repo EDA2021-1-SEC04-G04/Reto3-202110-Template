@@ -46,14 +46,16 @@ def NewCatalog(tipo:str, factor:float):
                 'Artistas' : None,
                 'Registros': None,
                 'Svalues' : None,
-                'Content' : None
+                'Content' : None,
+                'Generos' : None
                 }
     catalog['Pistas'] = mp.newMap(1100000, maptype = tipo, loadfactor= factor)
     catalog['Eventos'] = lt.newList(datastructure='ARRAY_LIST')
     catalog['Artistas'] = lt.newList()
     catalog['Registros_Eventos'] = lt.newList(datastructure='ARRAY_LIST')
     catalog['Svalues'] = mp.newMap(5500, maptype = tipo, loadfactor= factor)
-    catalog['Content'] = mp.newMap(15,maptype=tipo,loadfactor=factor) 
+    catalog['Content'] = mp.newMap(15,maptype=tipo,loadfactor=factor)
+    catalog['Generos'] = mp.newMap(30, maptype=tipo, loadfactor=factor) 
 
     return catalog
 
@@ -102,6 +104,19 @@ def addContent(catalogo):
     mp.put(contenido,'energy',None)
     mp.put(contenido,'mode',None)
     mp.put(contenido,'key',None)
+    
+def addGenerosniciales(catalogo):
+    re,re1,dt,dt1,co,co1,hp,hp1,jf,jf1,pp,pp1,rb,rb1,r,r1,mt,mt1 = ("reggae",(60,90), "down-tempo", (70,100), "chill-out", (90,120), "hip-hop",(85,115),"jazz and funk",(120,125),"pop",(100,130),"r&b",(60,80),"rock",(110,140),"metal",(100,160))
+    mp.put(catalogo['Generos'],re,re1)
+    mp.put(catalogo['Generos'],dt,dt1)
+    mp.put(catalogo['Generos'],co,co1)
+    mp.put(catalogo['Generos'],hp,hp1)
+    mp.put(catalogo['Generos'],jf,jf1)
+    mp.put(catalogo['Generos'],pp,pp1)
+    mp.put(catalogo['Generos'],rb,rb1)
+    mp.put(catalogo['Generos'],r,r1)
+    mp.put(catalogo['Generos'],mt,mt1)
+
 
 # Funciones para creacion de datos
 
@@ -161,7 +176,7 @@ def filtradoenlista(lista,criterio,min_,max_):
                 
     return pistas, reproducciones, artistas
     
-
+    
 # Funciones de consulta
 
 def songsByValues(arbol,val_min,val_max):
