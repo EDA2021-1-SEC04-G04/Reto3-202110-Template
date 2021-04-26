@@ -61,7 +61,7 @@ def req_2(catalog,ene_min,ene_max,dan_min,dan_max):
     pistas = catalog['Pistas']
     arbol_ene = controller.ArbolDe(catalog,pistas,'energy')
     arbol_dan = controller.filtradoenlista(om.values(arbol_ene,ene_min,ene_max),'danceability',dan_min, dan_max)
-    printReq2(rep[2],arbol_dan)
+    printReq2(arbol_dan,ene_min,ene_max,dan_min,dan_max)
 
 #Funciones de impresión
 
@@ -70,6 +70,15 @@ def printReq1(rep_art,content,val_min,val_max):
     linea = content + ' entre ' +str(val_min) +' y ' + str(val_max)
     respuesta = 'Reproducciones totales: ' + str(rep_art[0]) + ' Número de artistas únicos totales: ' + str(rep_art[1])
     print(linea)
+    print(respuesta)
+
+def printReq2(rep_art,ene_min,ene_max,dan_min,dan_max):
+    print('+'*10,' Resultados Req. #1...', '+'*10)
+    linea = 'Energy entre ' +str(ene_min) +' y ' + str(ene_max)
+    linea2 = 'Danceability entre ' +str(dan_min) +' y ' + str(dan_max)
+    respuesta = 'Número de pistas únicas totales: ' + str(rep_art[0])
+    print(linea)
+    print(linea2)
     print(respuesta)
 
 def print_events(catalog):
