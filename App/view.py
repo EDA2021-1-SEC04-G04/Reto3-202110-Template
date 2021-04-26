@@ -79,6 +79,11 @@ def req_4(generosconsulta, catalog):
         rango = me.getValue(rango)
         individual = controller.songsByValues(arboltempo,rango[0],rango[1])
         printreq4(individual)
+        
+        
+def req_5(catalog,hora_min,hora_max):
+    Filtrohora = controller.separarpistas(om.values(catalog['Registros_Eventos'], hora_min, hora_max))
+    arboltempo = controller.ArbolDe(catalog, Filtrohora, "tempo")
     
 #Funciones de impresión
 
@@ -218,6 +223,10 @@ while True:
                 catalog['Generos'][nombre] = (tempo_min,tempo_max)
             if int(eleccion[0]) == 3:
                 req_4(generosconsulta,catalog)
+    elif int(inputs[0]) == 6:
+        hora_min = input("\nIngrese la hora minima desde la cual quiere buscar generos:")
+        hora_max = input("\nIngrese la hora maxima desde la cual quiere buscar generos:")
+        req_5(catalog,hora_min,hora_max)
     elif int(inputs[0]) == 0:
         sys.exit(0)
 sys.exit(0)

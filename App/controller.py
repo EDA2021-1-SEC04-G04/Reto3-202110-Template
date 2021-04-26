@@ -97,6 +97,10 @@ def loadGenerosiniciales(catalogo):
     model.addGenerosniciales(catalogo)
 # Funciones de ordenamiento
 
+def separarpistas(catalogo, lista):
+    pistaslistas = model.separarpistas(catalogo,lista)
+    return pistaslistas
+
 # Funciones de consulta sobre el catálogo
 def ArbolDe(catalog,pistas, criterio):
     arbol = model.Arbolde(catalog,pistas,criterio)

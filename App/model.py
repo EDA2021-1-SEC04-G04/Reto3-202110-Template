@@ -52,7 +52,7 @@ def NewCatalog(tipo:str, factor:float):
     catalog['Pistas'] = mp.newMap(1100000, maptype = tipo, loadfactor= factor)
     catalog['Eventos'] = lt.newList(datastructure='ARRAY_LIST')
     catalog['Artistas'] = lt.newList()
-    catalog['Registros_Eventos'] = lt.newList(datastructure='ARRAY_LIST')
+    catalog['Registros_Eventos'] = om.newMap(omaptype='RBT')
     catalog['Svalues'] = mp.newMap(5500, maptype = tipo, loadfactor= factor)
     catalog['Content'] = mp.newMap(15,maptype=tipo,loadfactor=factor)
     catalog['Generos'] = mp.newMap(30, maptype=tipo, loadfactor=factor) 
@@ -89,7 +89,16 @@ def addArtista(catalogo, artista):
         lt.addLast(catalogo['Artistas'], artista)
     
 def addRegistro(catalogo, registro):
-    lt.addLast(catalogo['Registros_Eventos'], registro)
+    hora = list(registro['created_at'].split('-')[2])[3:5]
+    hora = "".join(hora)
+    entrada =  om.get(catalogo['Registros_Eventos'],hora)
+    if entrada is None:
+        lista = lt.newList(datastructure='ARRAY_LIST')
+        lt.addLast(lista, registro)
+        om.put(catalogo['Registros_Eventos'], hora, lista)
+    else:
+        l = me.getValue(entrada)
+        lt.addLast(l,registro)
 
 def addContent(catalogo):
     contenido = catalogo['Content']
@@ -200,6 +209,17 @@ def songsByValues(arbol,val_min,val_max):
     return totplays,totartists,totsongs,lst
 
 # Funciones utilizadas para comparar elementos dentro de una lista
+
+def separarpistas(catalogo,lista):
+    canciones = mp.newMap(maptype='PROBING', loadfactor=0.5)
+    for registro in lt.iterator(lista):
+        for num in range(0,lt.size(lista)):
+            if mp.contains(canciones, registro['track_id']) == False:
+                mp.put(canciones, mp.get(catalog['Pistas'],registro['track_id']))
+    return canciones
+        
+        
+        
 
 # Funciones de ordenamiento
 def compareValue(value1, value2):
