@@ -145,14 +145,14 @@ def arbolDeArbol(arbol,criterio, min,max):
                 lt.addLast(me.getValue(entry),song)
     return arbol_derivado
 '''
-def filtradoenlista(lista,criterio,min,max):
+def filtradoenlista(lista,criterio,min_,max_):
     pistas = lt.newList(datastructure='ARRAY_LIST')
     reproducciones = 0
     artistas = mp.newMap(maptype='PROBING', loadfactor=0.5)
-    for y in arbol:
+    for y in lista:
         for x in range(0,lt.size(y)):
             pista = lt.getElement(y,x)
-            if (float(pista[criterio]) >= min) and (float(pista[criterio]) <= min):
+            if (float(pista[criterio]) >= min_) and (float(pista[criterio]) <= max_):
                 lt.addLast(pistas,pista)
                 reproducciones += pista['reproducciones']
                 if mp.contains(artistas,pista['artist_id']) == False:
