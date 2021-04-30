@@ -271,3 +271,11 @@ def compareHashtags(h1, h2):
         return -1
     
 
+def comparargeneros(g1,g2):
+    genero = g2[0]
+    if (g1 == genero)
+        return 0
+    elif (g1 > genero):
+        return 1
+    elif (g1 < genero):
+        return -1
