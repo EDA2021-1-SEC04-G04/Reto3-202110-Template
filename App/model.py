@@ -227,20 +227,22 @@ def separarpistas(catalogo,lista):
 
 
 def recorridogeneros(catalogo, pistas):
-    generos = mp.keySet(catalog['Generos'])
+    generos = mp.keySet(catalogo['Generos'])
     contadores = mp.newMap(maptype='PROBING', loadfactor=0.5)
+    print(mp.keySet(pistas))
     for genero in generos:
         listacanciones = lt.newList(datastructure='ARRAY_LIST')
-        mp.put(contadores, genero, [0,listacanciones,genero])
-    for pista in pistas:
+        mp.put(contadores, genero, [0,listacanciones])
+    for llave in mp.keySet(pistas):
+        entrada = mp.get(pistas,llave)
+        pista = me.getValue(entrada)
         for genero in generos:
             valores = mp.get(catalogo['Generos'], genero)
             valores = me.getValue(valores)
             if pista['tempo'] >= valores[0] and pista['tempo'] <= valores[1]:
                 añadir = mp.get(contadores, genero)
                 añadir = me.getValue(añadir)
-                añadir[0] += int(pista['reproducciones']) + 1
-                lt.addLast(añadir[1],pista)
+                añadir[0] += pista['reproducciones']
     return contadores
 
 
@@ -289,10 +291,11 @@ def compareHashtags(h1, h2):
     
 
 def comparargeneros(g1,g2):
-    genero = g2[0]
-    if (g1 == genero)
+    gen1 = g1[0]
+    gen2 = g2[0]
+    if (gen1 == gen2):
         return 0
-    elif (g1 > genero):
+    elif (gen1 > gen2):
         return 1
-    elif (g1 < genero):
+    elif (gen1 < gen2):
         return -1
