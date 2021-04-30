@@ -29,6 +29,7 @@ from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 import random
+import datetime
 from DISClib.ADT import orderedmap as om
 """
 La vista se encarga de la interacción con el usuario
@@ -61,32 +62,36 @@ def req_2(catalog,ene_min,ene_max,dan_min,dan_max):
     pistas = catalog['Pistas']
     arbol_ene = controller.ArbolDe(catalog,pistas,'energy')
     arbol_dan = controller.filtradoenlista(om.values(arbol_ene,ene_min,ene_max),'danceability',dan_min, dan_max)
-    printReq2(arbol_dan,ene_min,ene_max,dan_min,dan_max)
+    printReq2_3(arbol_dan,"energy","danceability",ene_min,ene_max,dan_min,dan_max,2)
 
 def req_3(catalog, instru_min,instru_max,tempo_min,tempo_max):
     pistas = catalog['Pistas']
     arbol_spech = controller.ArbolDe(catalog,pistas, "tempo")
     filtradoinstrumental = controller.filtradoenlista(om.values(arbol_spech, tempo_min, tempo_max),"instrumentalness",instru_min,instru_max)
-    printReq2(filtradoinstrumental)
+    printReq2_3(filtradoinstrumental,"instrumentalness","tempo",instru_min,instru_max,tempo_min,tempo_max,3)
     
 def req_4(generosconsulta, catalog):
     arboltempo = controller.ArbolDe(catalog, catalog['Pistas'], "tempo")
     generos = generosconsulta.split(",")
+    rep = 0
+    linea = ""
     for genero in generos:
-        print(genero)
-        rango = mp.get(catalog['Generos'], genero)
-        print(rango)
+        gen = genero.lower()
+        rango = mp.get(catalog['Generos'], gen)
         rango = me.getValue(rango)
         individual = controller.songsByValues(arboltempo,rango[0],rango[1])
-        printreq4(individual)
-        
+        lin_rep = preprintreq4(individual,gen,rango)
+        rep+= lin_rep[1]
+        linea+= '\n'+lin_rep[0]
+    printReq4(rep,linea)
         
 def req_5(catalog,hora_min,hora_max):
-    Filtrohora = controller.separarpistas(om.values(catalog['Registros_Eventos'], hora_min, hora_max))
-    recorridogenero = controller.recorridogeneros(catalog,Filtrohora)
-    generomasreproducido = mp.get(recorridogenero[0], recorridogenero[1][0])
-    generomasreproducido = me.getValue(generomasreproducido)
-    listaconvader = controller.pistasconvader(catalogo, generomasreproducido[1])
+    hora_min = datetime.datetime.strptime(hora_min, '%H:%M:%S')
+    hora_max = datetime.datetime.strptime(hora_max, '%H:%M:%S')
+    Filtrohora = controller.separarpistas(catalog,om.values(catalog['Registros_Eventos'], hora_min.time(), hora_max.time()))
+    arboltempo = controller.ArbolDe(catalog, Filtrohora, "tempo")
+    
+
     
 #Funciones de impresión
 
@@ -97,14 +102,47 @@ def printReq1(rep_art,content,val_min,val_max):
     print(linea)
     print(respuesta)
 
-def printReq2(rep_art,ene_min,ene_max,dan_min,dan_max):
-    print('+'*10,' Resultados Req. #1...', '+'*10)
-    linea = 'Energy entre ' +str(ene_min) +' y ' + str(ene_max)
-    linea2 = 'Danceability entre ' +str(dan_min) +' y ' + str(dan_max)
-    respuesta = 'Número de pistas únicas totales: ' + str(rep_art[0])
+def printReq2_3(rep_art,crit1,crit2,val1_min,val1_max,val2_min,val2_max,req):
+    track_list = rep_art[0]
+    print('+'*10,' Resultados Req. #'+str(req) +'...', '+'*10)
+    linea = crit1.title() + ' entre ' +str(val1_min) +' y ' + str(val1_max)
+    linea2 = crit2.title() + ' entre ' +str(val2_min) +' y ' + str(val2_max)
+    respuesta = 'Número de pistas únicas totales: ' + str(lt.size(track_list))
     print(linea)
     print(linea2)
     print(respuesta)
+    print('\n'+ '-'*10,' Pistas únicas ', '-'*10)
+    i = 0
+    while i < 5:
+        r = random.randint(0,lt.size(track_list))
+        cancion = lt.getElement(track_list,r)
+        track_id = cancion['track_id']
+        crit_1 = cancion[crit1]
+        crit_2 = cancion[crit2]
+        rand = 'Pista '+ str(i+1) +': ' + track_id + ' con ' + str(crit1) +' de ' + crit_1 + ' y '\
+            + crit2 + ' de ' + str(crit_2)
+        print(rand)
+        i+=1
+
+def preprintreq4(lista,gen,ran)->None:
+    i=0
+    rep = 0
+    linea = '='*10+' ' +gen.upper()+' '+'='*10+'\nPara '+gen.title()+' el tempo está entre '+str(ran[0])+' y '+str(ran[1])+' BPM\nReproducciones de '+gen.title()+': '\
+        +str(lista[0])+' con '+str(lista[1])+' artistas diferentes\n'+'-'*5+ ' Algunos artistas de '+str(gen.title())+'-'*5+'\n'
+    rep += lista[0]
+    while i<10:
+        r = random.randint(0,lt.size(lista[3]))
+        cancion = lt.getElement(lista[3],r)
+        art_id = cancion['artist_id']
+        rand = 'Artista '+ str(i+1) +': ' + art_id +'\n'
+        linea+=rand
+        i+=1
+    return linea,rep
+
+def printReq4(rep,lin):
+    print('+'*10,' Resultados Req. #4...', '+'*10)
+    print('Número total de reproducciones:',rep)
+    print(lin)
 
 def print_events(catalog):
     eventos = catalog['Eventos']
@@ -115,7 +153,7 @@ def print_events(catalog):
         while i <5:
             print("-"*237)
             primera_linea = "{0:<2}{1:^20}{2:^20}{3:^20}{4:^20}{5:^20}{6:^20}{7:^20}{8:^20}{9:^20}{10:^20}\
-                ".format(str(i+1)+('.'),'ID del evento','Instrumentalness','Liveness','Speechiness','Danceability','Valence','Loudness','Tempo','Acousticness','Energy')
+                ".format(str(i+1)+('.'),'ID del evento','Instrumentalidad','Viveza','Habla','Danzabilidad','Valencia','Ruido','Tempo','Acusticidad','Energía')
             print(primera_linea)
             evento = lt.getElement(eventos,i)
             event_id = evento['id']
@@ -132,7 +170,7 @@ def print_events(catalog):
             print(info_video)
 
             segunda_linea = "{0:^20}{1:^20}{2:^10}{3:^25}{4:^40}{5:^40}\
-                ".format('Mode','Key','Lenguaje','Lugar de creacion','Zona horaria','ID de la pista')
+                ".format('Modo','Tonalidad','Lenguaje','Lugar de creacion','Zona horaria','ID de la pista')
             print(segunda_linea)
             mode = evento['mode']
             key = evento['key']
@@ -148,7 +186,7 @@ def print_events(catalog):
         while j > lt.size(catalog['Eventos'])-5:
             print("-"*237)
             primera_linea = "{0:<8}{1:^20}{2:^20}{3:^20}{4:^20}{5:^20}{6:^20}{7:^20}{8:^20}{9:^20}{10:^20}\
-                ".format(str(j)+('.'),'ID del evento','Instrumentalness','Liveness','Speechiness','Danceability','Valence','Loudness','Tempo','Acousticness','Energy')
+                ".format(str(j)+('.'),'ID del evento','Instrumentalidad','Viveza','Habla','Danzabilidad','Valencia','Ruido','Tempo','Acusticidad','Energía')
             print(primera_linea)
             evento = lt.getElement(eventos,j)
             event_id = evento['id']
@@ -165,7 +203,7 @@ def print_events(catalog):
             print(info_video)
 
             segunda_linea = "{0:^20}{1:^20}{2:^10}{3:^25}{4:^40}{5:^40}\
-                ".format('Mode','Key','Lenguaje','Lugar de creacion','Zona horaria','ID de la pista')
+                ".format('Modo','Tonalidad','Lenguaje','Lugar de creacion','Zona horaria','ID de la pista')
             print(segunda_linea)
             mode = evento['mode']
             key = evento['key']
@@ -195,7 +233,7 @@ while True:
         print_events(catalog)
         print("Cargado correctamente")
     elif int(inputs[0]) == 2:
-        content = input('Ingrese la característica sobre la que desea hacer la consulta: ')
+        content = input('Ingrese la característica sobre la que desea hacer la consulta: ').lower()
         val_min = float(input("Ingrese el valor mínimo de esta característica: "))
         val_max = float(input("Ingrese el valor máximo de esta característica: "))
         req_1(catalog,content,val_min,val_max)
@@ -220,15 +258,16 @@ while True:
             if int(eleccion[0])==1:
                 generosconsulta += input("Escriba los generos a consultar separados por comas:\n")
             if int(eleccion[0]) == 2:
-                nombre = input("Ingrese un nombre unico para el nuevo genero:\n") 
+                nombre = input("Ingrese un nombre unico para el nuevo genero:\n").lower()
                 tempo_min = float(input("Ingrese el BPM minimo: "))
                 tempo_max = float(input("Ingrese el BPM maximo: "))
-                catalog['Generos'][nombre] = (tempo_min,tempo_max)
+                mp.put(catalog['Generos'],nombre,(tempo_min,tempo_max))
+                generosconsulta+= ","+nombre
             if int(eleccion[0]) == 3:
                 req_4(generosconsulta,catalog)
     elif int(inputs[0]) == 6:
-        hora_min = input("\nIngrese la hora minima desde la cual quiere buscar genero:")
-        hora_max = input("\nIngrese la hora maxima desde la cual quiere buscar generos:")
+        hora_min = input("Hora inicial (hh:mm:ss): ")
+        hora_max = input("Hora final (hh:mm:ss): ")
         req_5(catalog,hora_min,hora_max)
     elif int(inputs[0]) == 0:
         sys.exit(0)

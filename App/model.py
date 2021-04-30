@@ -24,7 +24,6 @@
  * Dario Correal - Version inicial
  """
 
-
 import config as cf
 from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
@@ -89,13 +88,13 @@ def addArtista(catalogo, artista):
         lt.addLast(catalogo['Artistas'], artista)
     
 def addRegistro(catalogo, registro):
-    hora = list(registro['created_at'].split('-')[2])[3:5]
-    hora = "".join(hora)
-    entrada =  om.get(catalogo['Registros_Eventos'],hora)
+    hora = registro['created_at']
+    hora_registro = datetime.datetime.strptime(hora, '%Y-%m-%d %H:%M:%S')
+    entrada = om.get(catalogo['Registros_Eventos'], hora_registro.time())
     if entrada is None:
         lista = lt.newList(datastructure='ARRAY_LIST')
         lt.addLast(lista, registro)
-        om.put(catalogo['Registros_Eventos'], hora, lista)
+        om.put(catalogo['Registros_Eventos'], hora_registro.time(), lista)
     else:
         l = me.getValue(entrada)
         lt.addLast(l,registro)
@@ -115,7 +114,8 @@ def addContent(catalogo):
     mp.put(contenido,'key',None)
     
 def addGenerosniciales(catalogo):
-    re,re1,dt,dt1,co,co1,hp,hp1,jf,jf1,pp,pp1,rb,rb1,r,r1,mt,mt1 = ("reggae",(60,90), "down-tempo", (70,100), "chill-out", (90,120), "hip-hop",(85,115),"jazz and funk",(120,125),"pop",(100,130),"r&b",(60,80),"rock",(110,140),"metal",(100,160))
+    re,re1,dt,dt1,co,co1,hp,hp1,jf,jf1,pp,pp1,rb,rb1,r,r1,mt,mt1 = ("reggae",(60.0,90.0), "down-tempo", (70.0,100.0), "chill-out", (90.0,120.0), \
+        "hip-hop",(85.0,115.0),"jazz and funk",(120.0,125.0),"pop",(100.0,130.0),"r&b",(60.0,80.0),"rock",(110.0,140.0),"metal",(100.0,160.0))
     mp.put(catalogo['Generos'],re,re1)
     mp.put(catalogo['Generos'],dt,dt1)
     mp.put(catalogo['Generos'],co,co1)
@@ -125,7 +125,6 @@ def addGenerosniciales(catalogo):
     mp.put(catalogo['Generos'],rb,rb1)
     mp.put(catalogo['Generos'],r,r1)
     mp.put(catalogo['Generos'],mt,mt1)
-
 
 # Funciones para creacion de datos
 
@@ -184,6 +183,8 @@ def filtradoenlista(lista,criterio,min_,max_):
                     
                 
     return pistas, reproducciones, artistas
+    
+    
 # Funciones de consulta
 
 def songsByValues(arbol,val_min,val_max):
@@ -191,20 +192,18 @@ def songsByValues(arbol,val_min,val_max):
     totplays = 0
     artists = lt.newList()
     totartists = 0
-    uni_tracks = lt.newList()
     totsongs = 0
+    lista = lt.newList()
     for songs in lt.iterator(lst):
         for num in range(0,lt.size(songs)):
             song = lt.getElement(songs,num)
-            if lt.isPresent(artists,song['artist_id'])!=0:
+            lt.addLast(lista,song)
+            totplays += lt.size(song['eventos']) +1
+            totsongs += 1
+            if lt.isPresent(artists,song['artist_id'])==False:
                 totartists +=1
                 lt.addLast(artists,song['artist_id'])
-
-            totplays += song['reproducciones']
-
-            totsongs += 1
-
-    return totplays,totartists,totsongs,lst
+    return totplays,totartists,totsongs,lista
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 
@@ -225,7 +224,6 @@ def separarpistas(catalogo,lista):
                 lt.addLast(pista['hashtags'],registro['hashtag'])
     return canciones
 
-
 def recorridogeneros(catalogo, pistas):
     generos = mp.keySet(catalogo['Generos'])
     contadores = mp.newMap(maptype='PROBING', loadfactor=0.5)
@@ -245,7 +243,6 @@ def recorridogeneros(catalogo, pistas):
                 añadir[0] += pista['reproducciones']
     return contadores
 
-
 def cancionestop(pistas, catalogo):
     cantidad = 0
     for pista in lt.iterator(pistas):
@@ -258,15 +255,7 @@ def cancionestop(pistas, catalogo):
                 pista['VaderProm'] += valoravalues['vader_avg']
             cantidad += 1
     pista['VaderProm'] = pista['VaderProm']/cantidad
-    return pistas
-                
-        
-            
-            
-        
-    
-        
-        
+    return pistas      
 
 # Funciones de ordenamiento
 def compareValue(value1, value2):

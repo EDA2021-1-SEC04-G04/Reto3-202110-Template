@@ -26,7 +26,6 @@ import csv
 import time
 import tracemalloc
 
-
 """
 El controlador se encarga de mediar entre la vista y el modelo.
 """
@@ -77,7 +76,6 @@ def loadEventos(catalogo):
         model.addEvento(catalogo,pista)
 
 
-
 def loadSvalues(catalogo):
     sfile = cf.data_dir + 'sentiment_values.csv'
     input_file = csv.DictReader(open(sfile, encoding='utf-8'),delimiter = ',')
@@ -109,11 +107,9 @@ def ArbolDe(catalog,pistas, criterio):
     arbol = model.Arbolde(catalog,pistas,criterio)
     return arbol
 
-
 def filtradoenlista(lista,criterio, min_, max_):
     derivado = model.filtradoenlista(lista, criterio, min_, max_)
     return derivado
-
 
 
 def songsByValues(arbol,val_min,val_max):
@@ -126,13 +122,11 @@ def getTime():
     """
     return float(time.perf_counter()*1000)
 
-
 def getMemory():
     """
     toma una muestra de la memoria alocada en instante de tiempo
     """
     return tracemalloc.take_snapshot()
-
 
 def deltaMemory(start_memory, stop_memory):
     """
@@ -148,3 +142,4 @@ def deltaMemory(start_memory, stop_memory):
     # de Byte -> kByte
     delta_memory = delta_memory/1024.0
     return delta_memory
+
