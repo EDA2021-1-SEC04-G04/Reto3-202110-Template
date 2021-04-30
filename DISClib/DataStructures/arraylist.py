@@ -313,7 +313,7 @@ def isPresent(lst, e):
                     break
             if keyexist:
                 return keypos
-        return 0
+        return False
     except Exception as exp:
         error.reraise(exp, 'arraylist->isPresent: ')
 
