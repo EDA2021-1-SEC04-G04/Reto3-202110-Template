@@ -227,7 +227,7 @@ while True:
             if int(eleccion[0]) == 3:
                 req_4(generosconsulta,catalog)
     elif int(inputs[0]) == 6:
-        hora_min = input("\nIngrese la hora minima desde la cual quiere buscar generos:")
+        hora_min = input("\nIngrese la hora minima desde la cual quiere buscar genero:")
         hora_max = input("\nIngrese la hora maxima desde la cual quiere buscar generos:")
         req_5(catalog,hora_min,hora_max)
     elif int(inputs[0]) == 0:
