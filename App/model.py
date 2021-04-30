@@ -89,13 +89,13 @@ def addArtista(catalogo, artista):
         lt.addLast(catalogo['Artistas'], artista)
     
 def addRegistro(catalogo, registro):
-    hora = registro['created_at']
-    hora_registro = datetime.datetime.strptime(hora, '%Y-%m-%d %H:%M:%S')
-    entrada = om.get(catalogo['Registros_Eventos'], hora_registro.time())
+    hora = list(registro['created_at'].split('-')[2])[3:5]
+    hora = "".join(hora)
+    entrada =  om.get(catalogo['Registros_Eventos'],hora)
     if entrada is None:
         lista = lt.newList(datastructure='ARRAY_LIST')
         lt.addLast(lista, registro)
-        om.put(catalogo['Registros_Eventos'], hora_registro.time(), lista)
+        om.put(catalogo['Registros_Eventos'], hora, lista)
     else:
         l = me.getValue(entrada)
         lt.addLast(l,registro)
@@ -115,8 +115,7 @@ def addContent(catalogo):
     mp.put(contenido,'key',None)
     
 def addGenerosniciales(catalogo):
-    re,re1,dt,dt1,co,co1,hp,hp1,jf,jf1,pp,pp1,rb,rb1,r,r1,mt,mt1 = ("reggae",(60.0,90.0), "down-tempo", (70.0,100.0), "chill-out", (90.0,120.0), \
-        "hip-hop",(85.0,115.0),"jazz and funk",(120.0,125.0),"pop",(100.0,130.0),"r&b",(60.0,80.0),"rock",(110.0,140.0),"metal",(100.0,160.0))
+    re,re1,dt,dt1,co,co1,hp,hp1,jf,jf1,pp,pp1,rb,rb1,r,r1,mt,mt1 = ("reggae",(60,90), "down-tempo", (70,100), "chill-out", (90,120), "hip-hop",(85,115),"jazz and funk",(120,125),"pop",(100,130),"r&b",(60,80),"rock",(110,140),"metal",(100,160))
     mp.put(catalogo['Generos'],re,re1)
     mp.put(catalogo['Generos'],dt,dt1)
     mp.put(catalogo['Generos'],co,co1)
@@ -185,8 +184,6 @@ def filtradoenlista(lista,criterio,min_,max_):
                     
                 
     return pistas, reproducciones, artistas
-    
-    
 # Funciones de consulta
 
 def songsByValues(arbol,val_min,val_max):
@@ -194,18 +191,20 @@ def songsByValues(arbol,val_min,val_max):
     totplays = 0
     artists = lt.newList()
     totartists = 0
+    uni_tracks = lt.newList()
     totsongs = 0
-    lista = lt.newList()
     for songs in lt.iterator(lst):
         for num in range(0,lt.size(songs)):
             song = lt.getElement(songs,num)
-            lt.addLast(lista,song)
-            totplays += lt.size(song['eventos']) +1
-            totsongs += 1
-            if lt.isPresent(artists,song['artist_id'])==False:
+            if lt.isPresent(artists,song['artist_id'])!=0:
                 totartists +=1
                 lt.addLast(artists,song['artist_id'])
-    return totplays,totartists,totsongs,lista
+
+            totplays += song['reproducciones']
+
+            totsongs += 1
+
+    return totplays,totartists,totsongs,lst
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 
@@ -215,39 +214,38 @@ def separarpistas(catalogo,lista):
         for num in range(0,lt.size(recorrido)):
             registro = lt.getElement(recorrido, num)
             if mp.contains(canciones, registro['track_id']) == False:
-                pista = mp.get(catalogo['Pistas'],registro['track_id'])
-                if pista != None:
-                    pista = me.getValue(pista)
-                    pista['hashtags'] = lt.newList(datastructure='ARRAY_LIST')
-                    lt.addLast(pista['hashtags'],registro['hashtag'])
-                    mp.put(canciones,registro['track_id'], pista)
+                pista = mp.get(catalog['Pistas'],registro['track_id'])
+                pista = me.getValue(pista).copy()
+                pista['hashtags'] = lt.newList(datastructure='ARRAY_LIST')
+                lt.addLast(pista['hastags'],registro['hashtag'])
+                mp.put(canciones,registro['track_id'], pista)
             else:
                 pista = mp.get(canciones,registro['track_id'])
                 pista = me.getValue(pista)
                 lt.addLast(pista['hashtags'],registro['hashtag'])
     return canciones
 
+
 def recorridogeneros(catalogo, pistas):
-    generos = mp.keySet(catalogo['Generos'])
+    generos = mp.keySet(catalog['Generos'])
     contadores = mp.newMap(maptype='PROBING', loadfactor=0.5)
-    generomasreproducido = ["",0]
     for genero in generos:
         listacanciones = lt.newList(datastructure='ARRAY_LIST')
-        mp.put(contadores, genero, [0,listacanciones])
+        mp.put(contadores, genero, [0,listacanciones,genero])
     for pista in pistas:
         for genero in generos:
             valores = mp.get(catalogo['Generos'], genero)
             valores = me.getValue(valores)
             if pista['tempo'] >= valores[0] and pista['tempo'] <= valores[1]:
                 añadir = mp.get(contadores, genero)
-                añaidr = me.getValue(añadir)
-                añadir[0] += pista['reproducciones']
-                if añadir > generomasreproducido[1]:
-                    generomasreproducido[0] = genero
-                    generomasreproducido[1] = añadir[0]
-                    lt.addLast(añadir[1],pista)
-    return contadores, generomasreproducido  
-        
+                añadir = me.getValue(añadir)
+                añadir[0] += int(pista['reproducciones']) + 1
+                lt.addLast(añadir[1],pista)
+    return contadores
+
+
+    
+    
         
         
 
