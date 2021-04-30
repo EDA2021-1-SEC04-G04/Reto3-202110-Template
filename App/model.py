@@ -244,7 +244,24 @@ def recorridogeneros(catalogo, pistas):
     return contadores
 
 
-    
+def cancionestop(pistas, catalogo):
+    cantidad = 0
+    for pista in lt.iterator(pistas):
+        pista['VaderProm'] = float
+        
+        for hashtag in lt.iterator(pista['hashtags']):
+            valorvalues = mp.get(catalog['Svalues'], hashtag)
+            valorvalues = me.getValue(valorvalues)
+            if valoravalues['vader_avg'] is not None:
+                pista['VaderProm'] += valoravalues['vader_avg']
+            cantidad += 1
+    pista['VaderProm'] = pista['VaderProm']/cantidad
+    return pistas
+                
+        
+            
+            
+        
     
         
         
