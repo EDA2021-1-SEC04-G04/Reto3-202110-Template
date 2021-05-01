@@ -219,7 +219,7 @@ def getElement(lst, pos):
         Exception
     """
     try:
-        searchpos = 1
+        searchpos = 0
         node = lst['first']
         while searchpos < pos:
             searchpos += 1

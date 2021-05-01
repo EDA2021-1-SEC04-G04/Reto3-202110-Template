@@ -30,6 +30,8 @@ from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Sorting import shellsort as sa
 from DISClib.ADT import orderedmap as om
+from DISClib.Algorithms.Sorting import insertionsort as nsr
+from DISClib.Algorithms.Sorting import shellsort as shr
 assert cf
 import datetime
 """
@@ -207,57 +209,6 @@ def songsByValues(arbol,val_min,val_max):
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 
-def separarpistas(catalogo,lista):
-    canciones = mp.newMap(maptype='PROBING', loadfactor=0.5)
-    for recorrido in lt.iterator(lista):
-        for num in range(0,lt.size(recorrido)):
-            registro = lt.getElement(recorrido, num)
-            if mp.contains(canciones, registro['track_id']) == False:
-                pista = mp.get(catalog['Pistas'],registro['track_id'])
-                pista = me.getValue(pista).copy()
-                pista['hashtags'] = lt.newList(datastructure='ARRAY_LIST')
-                lt.addLast(pista['hastags'],registro['hashtag'])
-                mp.put(canciones,registro['track_id'], pista)
-            else:
-                pista = mp.get(canciones,registro['track_id'])
-                pista = me.getValue(pista)
-                lt.addLast(pista['hashtags'],registro['hashtag'])
-    return canciones
-
-def recorridogeneros(catalogo, pistas):
-    generos = mp.keySet(catalogo['Generos'])
-    contadores = mp.newMap(maptype='PROBING', loadfactor=0.5)
-    print(mp.keySet(pistas))
-    for genero in generos:
-        listacanciones = lt.newList(datastructure='ARRAY_LIST')
-        mp.put(contadores, genero, [0,listacanciones])
-    for llave in mp.keySet(pistas):
-        entrada = mp.get(pistas,llave)
-        pista = me.getValue(entrada)
-        for genero in generos:
-            valores = mp.get(catalogo['Generos'], genero)
-            valores = me.getValue(valores)
-            if pista['tempo'] >= valores[0] and pista['tempo'] <= valores[1]:
-                añadir = mp.get(contadores, genero)
-                añadir = me.getValue(añadir)
-                añadir[0] += pista['reproducciones']
-    return contadores
-
-def cancionestop(pistas, catalogo):
-    cantidad = 0
-    for pista in lt.iterator(pistas):
-        pista['VaderProm'] = float
-        
-        for hashtag in lt.iterator(pista['hashtags']):
-            valorvalues = mp.get(catalog['Svalues'], hashtag)
-            valorvalues = me.getValue(valorvalues)
-            if valoravalues['vader_avg'] is not None:
-                pista['VaderProm'] += valoravalues['vader_avg']
-            cantidad += 1
-    pista['VaderProm'] = pista['VaderProm']/cantidad
-    return pistas      
-
-# Funciones de ordenamiento
 def compareValue(value1, value2):
     """
     Compara dos fechas
@@ -277,14 +228,84 @@ def compareHashtags(h1, h2):
         return 1
     else:
         return -1
-    
 
-def comparargeneros(g1,g2):
-    gen1 = g1[0]
-    gen2 = g2[0]
-    if (gen1 == gen2):
-        return 0
-    elif (gen1 > gen2):
-        return 1
-    elif (gen1 < gen2):
-        return -1
+def comparargeneros(g1, g2):
+    return g1[0] > g2[0]
+
+
+
+# Funciones de ordenamiento
+
+def separarpistas(catalogo,lista):
+    canciones = mp.newMap(maptype='PROBING', loadfactor=0.5)
+    for recorrido in lt.iterator(lista):
+        for num in range(0,lt.size(recorrido)):
+            registro = lt.getElement(recorrido, num)
+            if mp.contains(canciones, registro['track_id']) == False:
+                pista = mp.get(catalogo['Pistas'],registro['track_id'])
+                if pista != None:
+                    pista = me.getValue(pista).copy()
+                    pista['hashtags'] = lt.newList(datastructure='ARRAY_LIST')
+                    lt.addLast(pista['hashtags'],registro['hashtag'])
+                    mp.put(canciones,registro['track_id'], pista)
+            else:
+                pista = mp.get(canciones,registro['track_id'])
+                pista = me.getValue(pista)
+                lt.addLast(pista['hashtags'],registro['hashtag'])
+    return canciones
+
+def recorridogeneros(catalogo, pistas):
+    generos = catalogo['Generos']
+    keys_generos = mp.keySet(generos)
+    contadores = mp.newMap(numelements=19,maptype='PROBING', loadfactor=0.5)
+    list_sort = lt.newList(datastructure='ARRAY_LIST',cmpfunction=comparargeneros)
+    for numero in range(0,lt.size(keys_generos)):
+        genero = lt.getElement(keys_generos,numero)
+        listacanciones = lt.newList(datastructure='ARRAY_LIST')
+        mp.put(contadores, genero, [0,listacanciones,genero])
+    keys = mp.keySet(pistas)
+    for num in range(0,lt.size(keys)):
+        llave = lt.getElement(keys,num)
+        entrada = mp.get(pistas,llave)
+        pista = me.getValue(entrada)
+        for entero in range(0,lt.size(keys_generos)):
+            llave_gen = lt.getElement(keys_generos,entero)
+            genero_val = mp.get(generos, llave_gen)
+            genero_val = me.getValue(genero_val)
+            tempo = float(pista['tempo'])
+            if tempo >= genero_val[0] and tempo <= genero_val[1]:
+                añadir = mp.get(contadores, llave_gen)
+                añadir = me.getValue(añadir)
+                añadir[0] += pista['reproducciones']
+                lt.addLast(añadir[1],pista)
+    llaves_cont = mp.keySet(contadores)
+    for digito in range(0,lt.size(llaves_cont)):
+        llave_cont = lt.getElement(llaves_cont,digito)
+        entry = mp.get(contadores, llave_cont)
+        lista = me.getValue(entry)
+        lt.addLast(list_sort,lista)
+    return list_sort
+
+def orden_generos(generos,size):
+    sortedlist = lt.subList(generos, 0, size)
+    sublist = shr.sort(sortedlist, comparargeneros)
+    return sublist
+
+def cancionestop(pistas, catalogo):
+    cantidad = 0
+    for pista in lt.iterator(pistas):
+        pista['VaderProm'] = float
+        
+        for hashtag in lt.iterator(pista['hashtags']):
+            valorvalues = mp.get(catalogo['Svalues'], hashtag)
+            valorvalues = me.getValue(valorvalues)
+            if valoravalues['vader_avg'] is not None:
+                pista['VaderProm'] += valoravalues['vader_avg']
+            cantidad += 1
+    pista['VaderProm'] = pista['VaderProm']/cantidad
+    return pistas      
+
+def orden_canciones(Sval_canciones):
+    pass
+
+

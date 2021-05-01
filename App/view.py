@@ -25,7 +25,6 @@ import sys
 import controller
 from DISClib.ADT import list as lt
 assert cf
-from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 import random
@@ -85,13 +84,16 @@ def req_4(generosconsulta, catalog):
         linea+= '\n'+lin_rep[0]
     printReq4(rep,linea)
         
-def req_5(catalog,hora_min,hora_max):
-    hora_min = datetime.datetime.strptime(hora_min, '%H:%M:%S')
-    hora_max = datetime.datetime.strptime(hora_max, '%H:%M:%S')
+def req_5(catalog,hor_min,hor_max):
+    hora_min = datetime.datetime.strptime(hor_min, '%H:%M:%S')
+    hora_max = datetime.datetime.strptime(hor_max, '%H:%M:%S')
     Filtrohora = controller.separarpistas(catalog,om.values(catalog['Registros_Eventos'], hora_min.time(), hora_max.time()))
-    arboltempo = controller.ArbolDe(catalog, Filtrohora, "tempo")
-    
-
+    lista_generos = controller.recorridogenero(catalog,Filtrohora)
+    size = lt.size(lista_generos)
+    orden_generos = controller.order_generos(lista_generos,size)
+    Sval_canciones = controller.Svalues_songs(orden_generos)
+    orden_canciones = controller.order_canciones(Sval_canciones)
+    printReq5(orden_generos,orden_canciones,hor_min,hor_max)
     
 #Funciones de impresión
 
@@ -143,6 +145,34 @@ def printReq4(rep,lin):
     print('+'*10,' Resultados Req. #4...', '+'*10)
     print('Número total de reproducciones:',rep)
     print(lin)
+
+def printReq5(lista_generos,lista_canciones,hora_min,hora_max):
+    tot_reproducciones = 0
+    for num in range(0,lt.size(lista_generos)):
+        gen = lt.getElement(lista_generos,num)
+        tot_reproducciones+=gen[0]
+    print('+'*10,' Resultados Req. #5...', '+'*10)
+    horas = 'Hay un total de '+str(tot_reproducciones)+' reproducciones entre '+hora_min+' y '+hora_max
+    title = '='*20+' Generos organizados por reproducciones '+'='*20
+    print(horas)
+    print(title)
+    i = 0
+    while i < lt.size(lista_generos):
+        genero = lt.getElement(lista_generos,i)
+        top = 'TOP '+str(i+1)+': '+genero[2]+' con '+str(genero[0])+' reproducciones'
+        print(top)
+        i+=1
+    print('...')
+    genero = lt.getElement(lista_generos,0)
+    top_title = 'El genero TOP es '+genero[2]+' con '+str(genero[0])+' reproducciones'
+    title = '='*20+' Análisis de sentimiento en '+genero[2]+' '+'='*20
+    print(top_title)
+    print(title)
+    lista_canciones_temporal = genero[1]
+    pistas = genero[2]+' tiene '+str(lt.size(lista_canciones_temporal))+' pistas únicas...'
+    print(pistas)
+    pistas = 'El TOP 10 de estas pistas es...'
+    print(pistas)
 
 def print_events(catalog):
     eventos = catalog['Eventos']
@@ -221,9 +251,9 @@ while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
-        print("Cargando información de los archivos ....")
         tipo = int(input("Ingrese 1 si desea manejar las colisiones con el método chaining o 2 para linear probing: "))
         load_factor = float(input("Ingrese el factor de carga con el que desea trabajar: "))
+        print("Cargando información de los archivos...")
         #cambio medida tiempo y memoria
         catalog = controller.init(tipo,load_factor)
         answer = controller.loadData(catalog,tipo)

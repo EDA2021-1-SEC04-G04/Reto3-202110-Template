@@ -25,6 +25,7 @@ import model
 import csv
 import time
 import tracemalloc
+from DISClib.ADT import list as lt
 
 """
 El controlador se encarga de mediar entre la vista y el modelo.
@@ -95,6 +96,9 @@ def loadGenerosiniciales(catalogo):
     model.addGenerosniciales(catalogo)
 # Funciones de ordenamiento
 
+def order_generos(generos,size):
+    return model.orden_generos(generos,size)
+
 def separarpistas(catalogo, lista):
     pistaslistas = model.separarpistas(catalogo,lista)
     return pistaslistas
@@ -102,7 +106,12 @@ def separarpistas(catalogo, lista):
 def recorridogenero(catalogo,pistas):
     tupla = model.recorridogeneros(catalogo,pistas)
     return tupla
+
+def order_canciones(Sval_canciones):
+    return model.orden_canciones(Sval_canciones)
+    
 # Funciones de consulta sobre el catálogo
+
 def ArbolDe(catalog,pistas, criterio):
     arbol = model.Arbolde(catalog,pistas,criterio)
     return arbol
@@ -111,9 +120,13 @@ def filtradoenlista(lista,criterio, min_, max_):
     derivado = model.filtradoenlista(lista, criterio, min_, max_)
     return derivado
 
-
 def songsByValues(arbol,val_min,val_max):
     return model.songsByValues(arbol,val_min,val_max)
+
+def Svalues_songs(orden_generos):
+    gen_top = lt.getElement(orden_generos,0)
+    pass
+    #return model.cancionestop(gen_top)
 
 #FUNCIONES TIEMPO
 def getTime():
