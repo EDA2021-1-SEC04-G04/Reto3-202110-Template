@@ -91,8 +91,10 @@ def req_5(catalog,hor_min,hor_max):
     lista_generos = controller.recorridogenero(catalog,Filtrohora)
     size = lt.size(lista_generos)
     orden_generos = controller.order_generos(lista_generos,size)
+    genero_top = lt.getElement(orden_generos,1)
+    print(genero_top[2])
+    orden_canciones = controller.order_canciones(genero_top)
     Sval_canciones = controller.Svalues_songs(orden_generos)
-    orden_canciones = controller.order_canciones(Sval_canciones)
     printReq5(orden_generos,orden_canciones,hor_min,hor_max)
     
 #Funciones de impresión
@@ -156,14 +158,14 @@ def printReq5(lista_generos,lista_canciones,hora_min,hora_max):
     title = '='*20+' Generos organizados por reproducciones '+'='*20
     print(horas)
     print(title)
-    i = 0
-    while i < lt.size(lista_generos):
+    i = 1
+    while i <= lt.size(lista_generos):
         genero = lt.getElement(lista_generos,i)
-        top = 'TOP '+str(i+1)+': '+genero[2]+' con '+str(genero[0])+' reproducciones'
+        top = 'TOP '+str(i)+': '+genero[2]+' con '+str(genero[0])+' reproducciones'
         print(top)
         i+=1
     print('...')
-    genero = lt.getElement(lista_generos,0)
+    genero = lt.getElement(lista_generos,1)
     top_title = 'El genero TOP es '+genero[2]+' con '+str(genero[0])+' reproducciones'
     title = '='*20+' Análisis de sentimiento en '+genero[2]+' '+'='*20
     print(top_title)
@@ -173,6 +175,13 @@ def printReq5(lista_generos,lista_canciones,hora_min,hora_max):
     print(pistas)
     pistas = 'El TOP 10 de estas pistas es...'
     print(pistas)
+    j = 1
+    while j <= 10:
+        cancion = lt.getElement(lista_canciones,j)
+        num_hash = lt.size(cancion['hashtags'])
+        top = 'TOP '+str(j)+' track: '+cancion['track_id']+' con '+str(num_hash)+' hashtags y un VADER de: '
+        print(top)
+        j+=1
 
 def print_events(catalog):
     eventos = catalog['Eventos']

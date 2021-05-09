@@ -232,7 +232,10 @@ def compareHashtags(h1, h2):
 def comparargeneros(g1, g2):
     return g1[0] > g2[0]
 
-
+def compararcanciones(c1,c2):
+    v1 = lt.size(c1['hashtags'])
+    v2 = lt.size(c2['hashtags'])
+    return v1>v2
 
 # Funciones de ordenamiento
 
@@ -287,7 +290,7 @@ def recorridogeneros(catalogo, pistas):
     return list_sort
 
 def orden_generos(generos,size):
-    sortedlist = lt.subList(generos, 0, size)
+    sortedlist = lt.subList(generos, 1, size)
     sublist = shr.sort(sortedlist, comparargeneros)
     return sublist
 
@@ -305,7 +308,11 @@ def cancionestop(pistas, catalogo):
     pista['VaderProm'] = pista['VaderProm']/cantidad
     return pistas      
 
-def orden_canciones(Sval_canciones):
-    pass
+def orden_canciones(gen_top):
+    print(gen_top[2])
+    size = lt.size(gen_top[1])
+    sortedlist = lt.subList(gen_top[1], 1, size)
+    sublist = shr.sort(sortedlist, compararcanciones)
+    return sublist
 
 
