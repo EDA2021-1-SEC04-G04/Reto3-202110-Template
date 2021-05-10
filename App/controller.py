@@ -70,7 +70,7 @@ def loadData(catalogo, tipolista):
 # Funciones para la carga de datos
 
 def loadEventos(catalogo):
-    pistafile = cf.data_dir + 'context_content_features-small.csv'
+    pistafile = cf.data_dir + 'context_content_features-50pct.csv'
     input_file = csv.DictReader(open(pistafile, encoding='utf-8'),delimiter = ',')
     for pista in input_file:
         model.addPista(catalogo, pista)
@@ -84,7 +84,7 @@ def loadSvalues(catalogo):
         model.addSvalue(catalogo,svalue)
         
 def loadRegistros(catalogo):
-    eventofile = cf.data_dir + 'user_track_hashtag_timestamp-small.csv'
+    eventofile = cf.data_dir + 'user_track_hashtag_timestamp-50pct.csv'
     input_file = csv.DictReader(open(eventofile, encoding='utf-8'),delimiter = ',')
     for evento in input_file:
         model.addRegistro(catalogo,evento)
