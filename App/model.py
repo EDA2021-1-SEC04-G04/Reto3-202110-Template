@@ -296,17 +296,24 @@ def orden_generos(generos,size):
 
 def cancionestop(pistas, catalogo):
     cantidad = 0
+    promediototal = 0
     for pista in lt.iterator(pistas):
-        pista['VaderProm'] = float
+        pista['VaderProm'] = 0.0
         
         for hashtag in lt.iterator(pista['hashtags']):
-            valorvalues = mp.get(catalogo['Svalues'], hashtag)
-            valorvalues = me.getValue(valorvalues)
-            if valoravalues['vader_avg'] is not None:
-                pista['VaderProm'] += valoravalues['vader_avg']
-            cantidad += 1
-    pista['VaderProm'] = pista['VaderProm']/cantidad
-    return pistas      
+            nombrehashtag = hashtag.lower()
+            
+            if mp.contains(catalogo['Svalues'],nombrehashtag):
+                
+                valorvalues = mp.get(catalogo['Svalues'], nombrehashtag)
+                valorvalues = me.getValue(valorvalues)
+                if valorvalues['vader_avg'] is not None and valorvalues['vader_avg'] != "":
+                    pista['VaderProm'] += float(valorvalues['vader_avg'])
+                    cantidad += 1
+        pista['VaderProm'] = pista['VaderProm']/cantidad
+        promediototal += pista['VaderProm']
+    promediototal = promediototal/lt.size(pistas)
+    return pistas, promediototal      
 
 def orden_canciones(gen_top):
     print(gen_top[2])

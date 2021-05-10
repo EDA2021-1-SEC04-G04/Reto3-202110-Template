@@ -123,10 +123,8 @@ def filtradoenlista(lista,criterio, min_, max_):
 def songsByValues(arbol,val_min,val_max):
     return model.songsByValues(arbol,val_min,val_max)
 
-def Svalues_songs(orden_generos):
-    gen_top = lt.getElement(orden_generos,0)
-    pass
-    #return model.cancionestop(gen_top)
+def Svalues_songs(orden_generos,catalog):
+    return model.cancionestop(orden_generos,catalog)
 
 #FUNCIONES TIEMPO
 def getTime():

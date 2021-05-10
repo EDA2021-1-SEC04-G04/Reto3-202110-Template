@@ -94,8 +94,9 @@ def req_5(catalog,hor_min,hor_max):
     genero_top = lt.getElement(orden_generos,1)
     print(genero_top[2])
     orden_canciones = controller.order_canciones(genero_top)
-    Sval_canciones = controller.Svalues_songs(orden_generos)
-    printReq5(orden_generos,orden_canciones,hor_min,hor_max)
+    Sval_canciones = controller.Svalues_songs(orden_canciones,catalog)
+    #Sval retorna una tupla con 1. la lista de canciones del genero top con el svalor añadido. 2. el svalor promedio de todas las canciones
+    printReq5(orden_generos,Sval_canciones,hor_min,hor_max)
     
 #Funciones de impresión
 
