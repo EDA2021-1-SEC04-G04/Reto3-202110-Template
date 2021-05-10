@@ -390,36 +390,52 @@ while True:
         print("Tiempo [ms]: ", f"{answer[0]:.3f}", "  ||  ",
               "Memoria [kB]: ", f"{answer[1]:.3f}")
     elif int(inputs[0]) == 2:
-        content = input('Ingrese la característica sobre la que desea hacer la consulta: ').lower()
-        val_min = float(input("Ingrese el valor mínimo de esta característica: "))
-        val_max = float(input("Ingrese el valor máximo de esta característica: "))
+        content = 'instrumentalness'
+        #content = input('Ingrese la característica sobre la que desea hacer la consulta: ').lower()
+        val_min = 0.5
+        #val_min = float(input("Ingrese el valor mínimo de esta característica: "))
+        val_max = 0.75
+        #val_max = float(input("Ingrese el valor máximo de esta característica: "))
         answer = req_1(catalog,content,val_min,val_max)
         print("Tiempo [ms]: ", f"{answer[0]:.3f}", "  ||  ",
               "Memoria [kB]: ", f"{answer[1]:.3f}")
     elif int(inputs[0]) == 3:
-        ene_min = float(input("Ingrese el valor mínimo de energía de la canción: "))
-        ene_max = float(input("Ingrese el valor máximo de energía de la canción: "))
-        dan_min = float(input("Ingrese el valor mínimo de danzabilidad de la canción: "))
-        dan_max = float(input("Ingrese el valor máximo de danzabilidad de la canción: "))
+        ene_min = 0.5
+        #ene_min = float(input("Ingrese el valor mínimo de energía de la canción: "))
+        ene_max = 0.75
+        #ene_max = float(input("Ingrese el valor máximo de energía de la canción: "))
+        dan_min = 0.75
+        #dan_min = float(input("Ingrese el valor mínimo de danzabilidad de la canción: "))
+        dan_max = 1.00
+        #dan_max = float(input("Ingrese el valor máximo de danzabilidad de la canción: "))
         answer = req_2(catalog,ene_min,ene_max,dan_min,dan_max)
         print("Tiempo [ms]: ", f"{answer[0]:.3f}", "  ||  ",
               "Memoria [kB]: ", f"{answer[1]:.3f}")
     elif int(inputs[0]) == 4:
-        instru_min =  float(input("Ingrese el valor mínimo de instrumentalidad de la canción: "))
-        instru_max =    float(input("Ingrese el valor máximo de instrumentabilidad de la canción: "))
-        tempo_min = float(input("Ingrese el valor mínimo de tempo de la canción: "))
-        tempo_max = float(input("Ingrese el valor máximo de tempo de la canción: "))
+        instru_min = 0.6
+        #instru_min =  float(input("Ingrese el valor mínimo de instrumentalidad de la canción: "))
+        instru_max = 0.9
+        #instru_max =    float(input("Ingrese el valor máximo de instrumentabilidad de la canción: "))
+        tempo_min = 40.0
+        #tempo_min = float(input("Ingrese el valor mínimo de tempo de la canción: "))
+        tempo_max = 60.0
+        #tempo_max = float(input("Ingrese el valor máximo de tempo de la canción: "))
         answer = req_3(catalog, instru_min,instru_max, tempo_min,tempo_max)
         print("Tiempo [ms]: ", f"{answer[0]:.3f}", "  ||  ",
               "Memoria [kB]: ", f"{answer[1]:.3f}")
     elif int(inputs[0]) == 5:
         eleccion = "8"
         generosconsulta = ""
+        i = 1
         while int(eleccion[0]) != 3:
-            eleccion = input("-Presione 1 para escribir los generos a estudiar ya guardados\n-Presione 2 para añadir uno \n-Presione 3 para confirmar la lista de generos a estudiar\n")
-        
+            #eleccion = input("-Presione 1 para escribir los generos a estudiar ya guardados\n-Presione 2 para añadir uno \n-Presione 3 para confirmar la lista de generos a estudiar\n")
+            if i == 1:
+                eleccion = '1'
+            else:
+                eleccion = '3' 
             if int(eleccion[0])==1:
-                generosconsulta += input("Escriba los generos a consultar separados por comas:\n")
+                #generosconsulta += input("Escriba los generos a consultar separados por comas:\n")
+                generosconsulta = 'Reggae,Hip-Hop,Pop'
             if int(eleccion[0]) == 2:
                 nombre = input("Ingrese un nombre unico para el nuevo genero:\n").lower()
                 tempo_min = float(input("Ingrese el BPM minimo: "))
@@ -430,9 +446,12 @@ while True:
                 answer = req_4(generosconsulta,catalog)
                 print("Tiempo [ms]: ", f"{answer[0]:.3f}", "  ||  ",
                 "Memoria [kB]: ", f"{answer[1]:.3f}")
+            i += 2
     elif int(inputs[0]) == 6:
-        hora_min = input("Hora inicial (hh:mm:ss): ")
-        hora_max = input("Hora final (hh:mm:ss): ")
+        #hora_min = input("Hora inicial (hh:mm:ss): ")
+        hora_min = '07:15:00'
+        #hora_max = input("Hora final (hh:mm:ss): ")
+        hora_max = '09:45:00'
         answer = req_5(catalog,hora_min,hora_max)
         print("Tiempo [ms]: ", f"{answer[0]:.3f}", "  ||  ",
               "Memoria [kB]: ", f"{answer[1]:.3f}")
