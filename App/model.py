@@ -34,6 +34,7 @@ from DISClib.Algorithms.Sorting import insertionsort as nsr
 from DISClib.Algorithms.Sorting import shellsort as shr
 assert cf
 import datetime
+import random
 """
 Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
 los mismos.
@@ -310,15 +311,22 @@ def cancionestop(pistas, catalogo):
                 if valorvalues['vader_avg'] is not None and valorvalues['vader_avg'] != "":
                     pista['VaderProm'] += float(valorvalues['vader_avg'])
                     cantidad += 1
-        pista['VaderProm'] = pista['VaderProm']/cantidad
+        if cantidad != 0:
+            pista['VaderProm'] = pista['VaderProm']/cantidad
         promediototal += pista['VaderProm']
     promediototal = promediototal/lt.size(pistas)
     return pistas, promediototal      
 
 def orden_canciones(gen_top):
-    print(gen_top[2])
-    size = lt.size(gen_top[1])
-    sortedlist = lt.subList(gen_top[1], 1, size)
+    seleccionadas = lt.newList(datastructure='ARRAY_LIST')
+    i = 0
+    while i < 10:
+        k = random.randint(0,lt.size(gen_top[1]))
+        song = lt.getElement(gen_top[1],k)
+        lt.addLast(seleccionadas,song)
+        i+=1
+    size = lt.size(seleccionadas)
+    sortedlist = lt.subList(seleccionadas, 1, size)
     sublist = shr.sort(sortedlist, compararcanciones)
     return sublist
 
